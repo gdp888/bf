@@ -272,7 +272,7 @@ def main() -> int:
         page = ctx.new_page()
 
         # --- 1. лента группы ---
-        log('open feed:', GROUP_URL)
+        log(f'open feed: {GROUP_URL}')
         page.goto(GROUP_URL, wait_until='domcontentloaded', timeout=60000)
         try:
             page.wait_for_selector('[data-post-id]', timeout=30000)
