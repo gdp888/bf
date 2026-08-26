@@ -75,26 +75,6 @@
   "posts": [
     {
       "id": 1,
-      "vk_id": "1386",
-      "slug": "my-pomogaem-samiru-eto-malchik-s-bolshim-serdtsem-i-ogromnoy-vk1386",
-      "date": "25 августа 2026",
-      "type": "video",
-      "title": "Мы помогаем Самиру. Это мальчик с большим сердцем и огромной мечтой —…",
-      "content": "Мы помогаем Самиру. Это мальчик с большим сердцем и огромной мечтой — ходить без помощи чужих рук. ️Сегодня мы начинаем важный этап: нам нужно оплатить курс реабилитации. Без этих процедур он не сможет двигаться дальше.…",
-      "full_content": "Мы помогаем Самиру. Это мальчик с большим сердцем и огромной мечтой — ходить без помощи чужих рук. ️Сегодня мы начинаем важный этап: нам нужно оплатить курс реабилитации. Без этих процедур он не сможет двигаться дальше. Мы собрали часть суммы, но оставшейся части не хватает. Мы просим вас о помощи. Давайте усилимся!\nВместе мы закроем этот сбор быстрее, чем кажется. Переведите посильную сумму. Для нас это просто цифры на счету,\nа для Самира — шанс на полноценную жизнь. ВМЕСТЕ МЫ СДЕЛАЕМ МИР ДОБРЕЕ Если вы хотите стать частью этого важного дела, свяжитесь с нами или поделитесь этим постом. Отправить пожертвования можно по нашим реквизитам БФ «ДОСТИЖЕНИЕ-ДЕТИ»\nИНН: 6382076793\nКПП: 633201001\nБИК: 044525593\nР/с: 40703810811950000000\nБанк: АО «АЛЬФА-БАНК»\nКор.счет: 30101810200000000593\nили через приложение банка по QR-коду:\n- Зайти в приложение банка\n- Оплата по QR\n- Назначение платежа «Благотворительность»",
-      "reactions": 0,
-      "comments_count": 0,
-      "shares": 0,
-      "has_video": true,
-      "video_duration": "0:46",
-      "tags": [],
-      "author": "БФ «Достижение-Дети»",
-      "commenters": [],
-      "media": [],
-      "vk_url": "https://vk.ru/wall-223846998_1386"
-    },
-    {
-      "id": 2,
       "vk_id": "1385",
       "slug": "my-pomogaem-samiru-eto-malchik-s-bolshim-serdtsem-i-ogromnoy",
       "date": "25 августа 2026",
@@ -114,7 +94,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1385"
     },
     {
-      "id": 3,
+      "id": 2,
       "vk_id": "1378",
       "slug": "my-pomogaem-samiru-video-obrashchenie",
       "date": "27 августа 2026",
@@ -143,7 +123,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1378"
     },
     {
-      "id": 4,
+      "id": 3,
       "vk_id": "1374",
       "slug": "letniy-otdykh-s-detmi",
       "date": "17 августа 2026",
@@ -207,7 +187,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1374"
     },
     {
-      "id": 5,
+      "id": 4,
       "vk_id": "1372",
       "slug": "kazhdyi-mozhet-stat-chastyu-proektov",
       "date": "13 августа 2026",
@@ -250,7 +230,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1372"
     },
     {
-      "id": 6,
+      "id": 5,
       "vk_id": "1357",
       "slug": "den-molodezhi-videootchet",
       "date": "28 июля 2026",
@@ -274,7 +254,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1357"
     },
     {
-      "id": 7,
+      "id": 6,
       "vk_id": "1351",
       "slug": "komanda-volonterov-fonda",
       "date": "27 июля 2026",
@@ -305,7 +285,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1351"
     },
     {
-      "id": 8,
+      "id": 7,
       "vk_id": "1348",
       "slug": "pomoshch-vane-reabilitatsiya",
       "date": "25 июля 2026",
@@ -337,7 +317,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1348"
     },
     {
-      "id": 9,
+      "id": 8,
       "vk_id": "1341",
       "slug": "den-zashchity-detey-foto",
       "date": "17 июля 2026",
@@ -422,7 +402,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1341"
     },
     {
-      "id": 10,
+      "id": 9,
       "vk_id": "1337",
       "slug": "sbor-zakryt-saveliy",
       "date": "16 июля 2026",
@@ -466,7 +446,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1337"
     },
     {
-      "id": 11,
+      "id": 10,
       "vk_id": "1334",
       "slug": "pomoshch-samiru-gabdullinu",
       "date": "10 июля 2026",
@@ -504,7 +484,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1334"
     },
     {
-      "id": 12,
+      "id": 11,
       "vk_id": "1331",
       "slug": "den-semyi-lyubvi-i-vernosti",
       "date": "8 июля 2026",
@@ -535,7 +515,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1331"
     },
     {
-      "id": 13,
+      "id": 12,
       "vk_id": "1327",
       "slug": "vspominaem-yarkie-momenty",
       "date": "6 июля 2026",
@@ -602,7 +582,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1327"
     },
     {
-      "id": 14,
+      "id": 13,
       "vk_id": "1322",
       "slug": "darim-podarki-radost",
       "date": "25 июня 2026",
@@ -639,7 +619,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1322"
     },
     {
-      "id": 15,
+      "id": 14,
       "vk_id": "1319",
       "slug": "eva-reabilitatsiya-kazan",
       "date": "22 июня 2026",
@@ -664,7 +644,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1319"
     },
     {
-      "id": 16,
+      "id": 15,
       "vk_id": "1316",
       "slug": "master-klass-den-zashchity-detey",
       "date": "17 июня 2026",
@@ -732,7 +712,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1316"
     },
     {
-      "id": 17,
+      "id": 16,
       "vk_id": "1314",
       "slug": "sbor-saveliy-napominaem",
       "date": "15 июня 2026",
@@ -770,7 +750,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1314"
     },
     {
-      "id": 18,
+      "id": 17,
       "vk_id": "1311",
       "slug": "den-rossii-zhit-i-tvorit",
       "date": "12 июня 2026",
@@ -801,7 +781,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1311"
     },
     {
-      "id": 19,
+      "id": 18,
       "vk_id": "1301",
       "slug": "den-zashchity-detey-novokuybyshevsk",
       "date": "9 июня 2026",
@@ -832,7 +812,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1301"
     },
     {
-      "id": 20,
+      "id": 19,
       "vk_id": "1289",
       "slug": "s-dnem-zashchity-detey",
       "date": "1 июня 2026",
@@ -875,7 +855,7 @@
       "vk_url": "https://vk.ru/wall-223846998_1289"
     },
     {
-      "id": 21,
+      "id": 20,
       "vk_id": "1288",
       "slug": "s-dnem-rozhdeniya-vanya",
       "date": "1 июня 2026",
