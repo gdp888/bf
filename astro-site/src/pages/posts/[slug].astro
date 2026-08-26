@@ -38,6 +38,11 @@ function getPostGradient(type: string) {
 
 // Форматирование даты
 const displayDate = post.date.includes('ago') ? post.date : post.date;
+
+// Проверяем есть ли медиа
+const hasMedia = post.media && post.media.length > 0;
+const hasVideoThumb = hasMedia && post.media.some(m => m.type === 'video_thumb');
+const hasImages = hasMedia && post.media.some(m => m.type === 'image');
 ---
 
 <Layout title={`${post.title} — БФ «Достижение-Дети»`} description={post.content.substring(0, 160)}>
@@ -83,7 +88,11 @@ const displayDate = post.date.includes('ago') ? post.date : post.date;
         <!-- Author & Stats -->
         <div class="flex flex-wrap items-center gap-6 text-white/90">
           <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">🌟</div>
+            <img 
+              src={fund_info.avatar} 
+              alt={fund_info.name}
+              class="w-10 h-10 rounded-full border-2 border-white/30 object-cover"
+            />
             <span>{post.author || fund_info.name}</span>
           </div>
           
@@ -109,28 +118,171 @@ const displayDate = post.date.includes('ago') ? post.date : post.date;
   <article class="py-12 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto">
-        <!-- Main Content Card -->
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-          <!-- Video Placeholder (if applicable) -->
-          {post.has_video && (
-            <div class="relative bg-gradient-to-br from-gray-900 to-gray-800 aspect-video flex items-center justify-center group cursor-pointer">
-              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M0%2020L20%200L40%2020L20%2040z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
-              
-              <div class="relative z-10">
-                <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <div class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center pl-1">
-                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        
+        <!-- Media Gallery -->
+        {hasMedia && (
+          <div class="mb-10">
+            {/* Single Video Thumb */}
+            {hasVideoThumb && !hasImages && (
+              <div class="relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
+                <img 
+                  src={post.media.find(m => m.type === 'video_thumb').url}
+                  alt={post.media.find(m => m.type === 'video_thumb').alt}
+                  class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                
+                {/* Video Overlay */}
+                <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                  <div class="relative">
+                    <!-- Play Button -->
+                    <div class="w-24 h-24 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
+                      <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center pl-1">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Duration Badge -->
+                    <div class="absolute -bottom-2 -right-2 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
+                      ▶️ {post.video_duration || '0:46'}
+                    </div>
                   </div>
                 </div>
-                <p class="text-white/80 text-center mt-4 text-sm">Смотреть видео ({post.video_duration})</p>
+                
+                <!-- Caption */}
+                {post.media.find(m => m.type === 'video_thumb').caption && (
+                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-20">
+                    <p class="text-white text-lg font-medium">
+                      🎬 {post.media.find(m => m.type === 'video_thumb').caption}
+                    </p>
+                  </div>
+                )}
+                
+                <!-- VK Link Overlay -->
+                <a 
+                  href={`https://vk.ru/dostigenie_deti`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="absolute top-4 right-4 bg-[#0077FF] hover:bg-[#0066DD] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 backdrop-blur-sm"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+                  Смотреть в ВК
+                </a>
               </div>
-              
-              <div class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3 text-white text-sm">
-                🎬 Видео доступно в нашей группе ВКонтакте
-              </div>
-            </div>
-          )}
+            )}
 
+            {/* Image Gallery (multiple images or single image without video) */}
+            {(hasImages && !hasVideoThumb) && (
+              <div class={`grid ${post.media.filter(m => m.type === 'image').length > 1 ? 'grid-cols-1 md:grid-cols-2 gap-4' : 'grid-cols-1'}`}>
+                {post.media.filter(m => m.type === 'image').map((media, index) => (
+                  <figure key={index} class={`rounded-2xl overflow-hidden shadow-xl group ${index === 0 && post.media.filter(m => m.type === 'image').length > 1 ? 'md:row-span-2' : ''}`}>
+                    <div class="relative overflow-hidden">
+                      <img 
+                        src={media.url}
+                        alt={media.alt}
+                        class="w-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+                        loading="lazy"
+                        style={index === 0 && post.media.filter(m => m.type === 'image').length > 1 ? 'min-height: 400px;' : 'max-height: 300px;'}
+                      />
+                      
+                      {/* Hover Overlay */}
+                      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div class="bg-white/90 rounded-full p-3 shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
+                          <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Caption */}
+                    {media.caption && (
+                      <figcaption class="bg-white p-4 border-t border-gray-100">
+                        <p class="text-gray-700 text-sm flex items-start gap-2">
+                          <span>📸</span>
+                          <span>{media.caption}</span>
+                        </p>
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            )}
+
+            {/* Mixed Media (Video + Images) */}
+            {hasVideoThumb && hasImages && (
+              <div class="space-y-4">
+                {/* Video First */}
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
+                  <img 
+                    src={post.media.find(m => m.type === 'video_thumb').url}
+                    alt={post.media.find(m => m.type === 'video_thumb').alt}
+                    class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  
+                  <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                    <div class="w-20 h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
+                      <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center pl-1">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-3 text-white">
+                    <p class="font-medium">🎬 {post.media.find(m => m.type === 'video_thumb').caption || 'Видео доступно в группе ВК'} ({post.video_duration})</p>
+                  </div>
+                  
+                  <a 
+                    href={`https://vk.ru/dostigenie_deti`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="absolute top-4 right-4 bg-[#0077FF] hover:bg-[#0066DD] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 backdrop-blur-sm"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+                    Смотреть в ВК
+                  </a>
+                </div>
+
+                {/* Then Images */}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {post.media.filter(m => m.type === 'image').map((media, index) => (
+                    <figure key={index} class="rounded-2xl overflow-hidden shadow-xl group bg-white">
+                      <div class="relative overflow-hidden">
+                        <img 
+                          src={media.url}
+                          alt={media.alt}
+                          class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+                          loading="lazy"
+                        />
+                        
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <div class="bg-white/90 rounded-full p-2 shadow-lg">
+                            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {media.caption && (
+                        <figcaption class="p-3 border-t border-gray-100">
+                          <p class="text-gray-600 text-xs flex items-start gap-2">
+                            <span>📸</span>
+                            <span>{media.caption}</span>
+                          </p>
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <!-- Content Card -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
           <!-- Content Body -->
           <div class="p-8 md:p-12 prose prose-lg max-w-none">
             {/* Render markdown-like content */}

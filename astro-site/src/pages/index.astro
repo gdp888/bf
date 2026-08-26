@@ -2,7 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import fundData from '../data/fund.json';
 
-const { fund_info, stories, stats } = fundData;
+const { fund_info, stories, stats, posts } = fundData;
+const pinnedPost = posts.find(p => p.type === 'pinned');
 ---
 
 <Layout title="БФ «Достижение-Дети» — Помощь детям с особенностями здоровья">
@@ -111,24 +112,49 @@ const { fund_info, stories, stats } = fundData;
         </div>
         
         {stories.length > 0 && (
-          <div class="bg-gradient-to-br from-blue-50 to-amber-50 rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-primary-200 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/2"></div>
-            
-            <div class="relative z-10">
-              <div class="flex items-start gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg">
-                  👦
-                </div>
-                <div>
-                  <h3 class="text-2xl font-bold text-gray-900">{stories[0].name}</h3>
-                  <p class="text-gray-600">{stories[0].age} • {stories[0].condition}</p>
-                  <span class="inline-flex items-center gap-1 mt-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+          <div class="bg-gradient-to-br from-blue-50 to-amber-50 rounded-3xl shadow-xl relative overflow-hidden">
+            {/* Image from pinned post */}
+            {pinnedPost && pinnedPost.media && pinnedPost.media.length > 0 && (
+              <div class="relative h-64 md:h-80 overflow-hidden">
+                <img 
+                  src={pinnedPost.media[0].url}
+                  alt={pinnedPost.media[0].alt || stories[0].name}
+                  class="w-full h-full object-cover"
+                  loading="eager"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                
+                {/* Overlay content */}
+                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+                  <span class="inline-flex items-center gap-1 bg-green-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mb-3">
+                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                     {stories[0].status}
                   </span>
+                  
+                  <h3 class="text-2xl md:text-3xl font-bold mb-2">{stories[0].name}</h3>
+                  <p class="text-white/90 text-sm md:text-base">{stories[0].age} • {stories[0].condition}</p>
                 </div>
               </div>
+            )}
+            
+            <div class="p-8 md:p-12">
+              {!pinnedPost?.media?.length && (
+                <>
+                  <div class="flex items-start gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg">
+                      👦
+                    </div>
+                    <div>
+                      <h3 class="text-2xl font-bold text-gray-900">{stories[0].name}</h3>
+                      <p class="text-gray-600">{stories[0].age} • {stories[0].condition}</p>
+                      <span class="inline-flex items-center gap-1 mt-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        {stories[0].status}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
               
               <p class="text-gray-700 leading-relaxed mb-6 text-lg">
                 {stories[0].story}
@@ -141,7 +167,7 @@ const { fund_info, stories, stats } = fundData;
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="/help" className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-center py-4 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
+                <a href={`/posts/${pinnedPost?.slug || '#'}`} className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-center py-4 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
                   <span>❤️</span> Помочь {stories[0].name.split(' ')[0]}
                 </a>
                 <a href="/stories" className="flex-1 bg-white hover:bg-gray-50 text-gray-700 text-center py-4 rounded-xl font-semibold transition-all border border-gray-200 flex items-center justify-center gap-2">
