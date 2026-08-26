@@ -138,15 +138,22 @@ def make_slug(title: str, vk_id: str, existing: set) -> str:
 
 
 def detect_type(txt: str, n_imgs: int):
-    """-> (type, has_video, video_duration, cleaned_text)"""
-    if re.search(r'р/с|реквизит|назначение платежа', txt, re.I):
-        return 'call_to_action', False, '', txt
+    """-> (type, has_video, video_duration, cleaned_text)
+    Важно: видео (метка длительности в начале) проверяется первым —
+    видеопосты с реквизитами не должны превращаться в call_to_action."""
     if re.match(r'^\s*\d+:\d{2}\s*\n', txt):
         txt, dur = strip_duration(txt)
         return 'video', True, dur, txt
+    if re.search(r'р/с|реквизит|назначение платежа', txt, re.I):
+        return 'call_to_action', False, '', txt
     if n_imgs >= 3:
         return 'event', False, '', txt
     return 'post', False, '', txt
+
+
+def fingerprint(txt: str) -> str:
+    """Агрессивная нормализация для сравнения постов-дублей."""
+    return re.sub(r'[^a-zа-я0-9]+', '', (txt or '').lower())[:100]
 
 
 def apply_bold(txt: str) -> str:
@@ -198,10 +205,13 @@ COLLECT_JS = """
 
 DETAIL_JS_TEMPLATE = """
 (() => {
-  const art = document.querySelector('[data-post-id="-%GID%_%PID%"]')
-           || document.querySelector('article');
+  const byId = document.querySelector('[data-post-id="-%GID%_%PID%"]');
+  const art = byId || document.querySelector('article');
   const wall = (art && (art.querySelector('.wall_text')
-             || art.querySelector('.wall_post_cont'))) || art;
+             || art.querySelector('.wall_post_cont')))
+             || document.querySelector('.wall_text')
+             || document.querySelector('.wall_post_cont')
+             || art;
   const txt = ((wall && wall.innerText) || '').trim();
   let date = '';
   const rd = document.querySelector('.rel_date, time');
@@ -258,6 +268,8 @@ def main() -> int:
     data = json.loads(FUND_JSON.read_text(encoding='utf-8'))
     known = {str(p.get('vk_id')) for p in data['posts']}
     known_slugs = {p['slug'] for p in data['posts']}
+    seen_fps = {fingerprint(p.get('full_content', '')) for p in data['posts']}
+    seen_fps.discard('')
     log(f'known posts: {len(known)}')
 
     with sync_playwright() as pw:
@@ -309,9 +321,11 @@ def main() -> int:
 
         # --- 2. новые id ---
         def is_clip(item):
-            t = item.get('txt', '')
-            return ('Original sound' in t
-                    or len(t.strip()) < 40)
+            # только по явным маркерам клипов (ru/en); пустой текст в ленте —
+            # не повод отбрасывать: виртуализация VK вычищает текст из DOM,
+            # реальный текст добирается на странице поста (порог MIN_TEXT_LEN)
+            t = (item.get('txt') or '').lower()
+            return 'original sound' in t or 'оригинал' in t
 
         new_ids = [it['id'].split('_')[-1] for it in feed.values()
                    if it['id'].split('_')[-1] not in known and not is_clip(it)]
@@ -342,6 +356,15 @@ def main() -> int:
                 log(f'  skip: text too short ({len(raw_txt.strip())})')
                 continue
             txt = clean_text(raw_txt)
+            if len(txt) < MIN_TEXT_LEN:
+                log(f'  skip: text too short after clean ({len(txt)})')
+                continue
+            # дедуп: повторные посты (репосты) пропускаем ДО скачивания фото
+            fp = fingerprint(txt)
+            if fp and fp in seen_fps:
+                log('  skip: дубликат уже существующего поста')
+                continue
+            seen_fps.add(fp)
             media = fetch_images(pid, det.get('imgs', []))
             post_type, has_video, dur, txt = detect_type(txt, len(media))
             date = parse_vk_date(det.get('date', ''))
