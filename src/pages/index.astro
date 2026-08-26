@@ -2,8 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import fundData from '../data/fund.json';
 
-const { fund_info, stories, stats, posts } = fundData;
-const pinnedPost = posts.find(p => p.type === 'pinned');
+const { fund_info, stories, stats } = fundData;
+// сначала активные сборы, закрытые — в конце
+const sortedStories = [...stories].sort(
+  (a, b) => (a.status.includes('закрыт') ? 1 : 0) - (b.status.includes('закрыт') ? 1 : 0)
+);
 ---
 
 <Layout title="БФ «Достижение-Дети» — Помощь детям с особенностями здоровья">
@@ -37,11 +40,12 @@ const pinnedPost = posts.find(p => p.type === 'pinned');
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </a>
           <a 
-            href="/stories" 
+            href="#sbory" 
             class="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/30 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2"
           >
-            <span>📖</span>
-            <span>Истории детей</span>
+            <span>🔥</span>
+            <span>Срочные сборы</span>
+            <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
           </a>
         </div>
         
@@ -56,6 +60,96 @@ const pinnedPost = posts.find(p => p.type === 'pinned');
       <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
         <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
       </svg>
+    </div>
+  </section>
+
+  <!-- Urgent Fundraising Cards -->
+  <section id="sbory" class="py-20 bg-white scroll-mt-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="inline-block bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm font-medium mb-4">
+            🔥 Горячие сборы
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+            Срочные сборы — помощь нужна сейчас
+          </h2>
+          <p class="text-gray-600 mt-4 text-lg">
+            Каждое пожертвование — это шаг ребёнка к выздоровлению. Присоединяйтесь!
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          {sortedStories.map((story) => {
+            const isClosed = story.status.includes('закрыт');
+            const firstName = story.name.split(' ')[0];
+            return (
+              <article class={`bg-white rounded-3xl shadow-xl overflow-hidden border transition-all duration-300 group flex flex-col hover:shadow-2xl hover:-translate-y-1 ${isClosed ? 'border-emerald-100' : 'border-gray-100'}`}>
+                <div class="relative h-56 overflow-hidden">
+                  {story.image ? (
+                    <img
+                      src={story.image}
+                      alt={story.name}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-primary-400 via-primary-500 to-amber-400 flex items-center justify-center">
+                      <span class="text-8xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">👧</span>
+                    </div>
+                  )}
+                  {isClosed ? (
+                    <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-emerald-500/95 backdrop-blur-sm text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                      ✅ Сбор закрыт — спасибо!
+                    </span>
+                  ) : (
+                    <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-red-500/95 backdrop-blur-sm text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                      <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                      Срочный сбор
+                    </span>
+                  )}
+                </div>
+
+                <div class="p-6 md:p-7 flex flex-col flex-1">
+                  <h3 class="text-2xl font-bold text-gray-900">{story.name}</h3>
+                  <p class="text-gray-500 text-sm mt-1">{story.age} • {story.condition}</p>
+                  <p class="text-gray-700 mt-4 leading-relaxed flex-1">{story.goal}</p>
+
+                  <div class="mt-6">
+                    {isClosed ? (
+                      <a
+                        href={`/posts/${story.post_slug}`}
+                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-center py-3.5 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <span>📖</span> История успеха
+                      </a>
+                    ) : (
+                      <>
+                        <a
+                          href="/help"
+                          class="w-full bg-primary-500 hover:bg-primary-600 text-white text-center py-3.5 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2"
+                        >
+                          <span>❤️</span> Помочь {firstName}
+                        </a>
+                        <a
+                          href={`/posts/${story.post_slug}`}
+                          class="block text-center text-sm text-gray-500 hover:text-primary-600 mt-3 transition-colors"
+                        >
+                          История ребёнка →
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <p class="text-center text-gray-500 text-sm mt-10">
+          Хотите узнать больше о детях? <a href="/stories" class="text-primary-600 hover:underline font-medium">Все истории →</a>
+        </p>
+      </div>
     </div>
   </section>
 
@@ -94,89 +188,6 @@ const pinnedPost = posts.find(p => p.type === 'pinned');
           <div class="text-3xl font-bold text-gray-800">{stats.posts}</div>
           <div class="text-sm text-gray-500 mt-1">Постов</div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Story -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-12">
-          <span class="inline-block bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-sm font-medium mb-4">
-            🌟 История, которая трогает сердце
-          </span>
-          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
-            Им нужна наша помощь прямо сейчас
-          </h2>
-        </div>
-        
-        {stories.length > 0 && (
-          <div class="bg-gradient-to-br from-blue-50 to-amber-50 rounded-3xl shadow-xl relative overflow-hidden">
-            {/* Image from pinned post */}
-            {pinnedPost && pinnedPost.media && pinnedPost.media.length > 0 && (
-              <div class="relative h-64 md:h-80 overflow-hidden">
-                <img 
-                  src={pinnedPost.media[0].url}
-                  alt={pinnedPost.media[0].alt || stories[0].name}
-                  class="w-full h-full object-cover"
-                  loading="eager"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                
-                {/* Overlay content */}
-                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-                  <span class="inline-flex items-center gap-1 bg-green-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mb-3">
-                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-                    {stories[0].status}
-                  </span>
-                  
-                  <h3 class="text-2xl md:text-3xl font-bold mb-2">{stories[0].name}</h3>
-                  <p class="text-white/90 text-sm md:text-base">{stories[0].age} • {stories[0].condition}</p>
-                </div>
-              </div>
-            )}
-            
-            <div class="p-8 md:p-12">
-              {!pinnedPost?.media?.length && (
-                <>
-                  <div class="flex items-start gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg">
-                      👦
-                    </div>
-                    <div>
-                      <h3 class="text-2xl font-bold text-gray-900">{stories[0].name}</h3>
-                      <p class="text-gray-600">{stories[0].age} • {stories[0].condition}</p>
-                      <span class="inline-flex items-center gap-1 mt-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        {stories[0].status}
-                      </span>
-                    </div>
-                  </div>
-                </>
-              )}
-              
-              <p class="text-gray-700 leading-relaxed mb-6 text-lg">
-                {stories[0].story}
-              </p>
-              
-              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-primary-200">
-                <p class="text-primary-800 font-medium">
-                  💫 <strong>Цель:</strong> {stories[0].goal}
-                </p>
-              </div>
-              
-              <div class="flex flex-col sm:flex-row gap-4">
-                <a href={`/posts/${pinnedPost?.slug || '#'}`} class="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-center py-4 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
-                  <span>❤️</span> Помочь {stories[0].name.split(' ')[0]}
-                </a>
-                <a href="/stories" class="flex-1 bg-white hover:bg-gray-50 text-gray-700 text-center py-4 rounded-xl font-semibold transition-all border border-gray-200 flex items-center justify-center gap-2">
-                  <span>📖</span> Все истории
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   </section>
