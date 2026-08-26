@@ -282,6 +282,18 @@ def main() -> int:
             return 0
         time.sleep(2)
 
+        dbg = page.evaluate("""
+(() => ({
+  url: location.href,
+  title: document.title,
+  anyPostIds: document.querySelectorAll('[data-post-id]').length,
+  sampleIds: [...document.querySelectorAll('[data-post-id]')]
+              .slice(0, 6).map(e => e.getAttribute('data-post-id')),
+  bodySnippet: (document.body.innerText || '').replace(/\\s+/g, ' ').slice(0, 250),
+}))
+""")
+        log('DEBUG page: ' + json.dumps(dbg, ensure_ascii=False))
+
         feed = {}
         stale = 0
         for _ in range(25):
