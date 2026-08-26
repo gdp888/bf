@@ -97,10 +97,10 @@ const hasImages = hasMedia && post.media.some(m => m.type === 'image');
           </div>
           
           <div class="flex items-center gap-4 text-sm">
-            <span className="flex items-center gap-1">❤️ {post.reactions}</span>
-            <span className="flex items-center gap-1">💬 {post.comments_count || 0}</span>
+            <span class="flex items-center gap-1">❤️ {post.reactions}</span>
+            <span class="flex items-center gap-1">💬 {post.comments_count || 0}</span>
             {post.shares && (
-              <span className="flex items-center gap-1">🔗 {post.shares}</span>
+              <span class="flex items-center gap-1">🔗 {post.shares}</span>
             )}
           </div>
         </div>

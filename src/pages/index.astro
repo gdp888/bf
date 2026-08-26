@@ -166,11 +166,11 @@ const pinnedPost = posts.find(p => p.type === 'pinned');
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a href={`/posts/${pinnedPost?.slug || '#'}`} className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-center py-4 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
+              <div class="flex flex-col sm:flex-row gap-4">
+                <a href={`/posts/${pinnedPost?.slug || '#'}`} class="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-center py-4 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
                   <span>❤️</span> Помочь {stories[0].name.split(' ')[0]}
                 </a>
-                <a href="/stories" className="flex-1 bg-white hover:bg-gray-50 text-gray-700 text-center py-4 rounded-xl font-semibold transition-all border border-gray-200 flex items-center justify-center gap-2">
+                <a href="/stories" class="flex-1 bg-white hover:bg-gray-50 text-gray-700 text-center py-4 rounded-xl font-semibold transition-all border border-gray-200 flex items-center justify-center gap-2">
                   <span>📖</span> Все истории
                 </a>
               </div>
