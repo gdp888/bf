@@ -1,0 +1,4 @@
+# Force Vercel to ignore cache and reinstall
+node_modules/
+.astro/
+dist/
