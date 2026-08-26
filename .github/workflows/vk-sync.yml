@@ -1,0 +1,53 @@
+name: VK Sync
+
+# Автосинхронизация постов из группы ВК в src/data/fund.json.
+# По расписанию (ежедневно в 06:00 UTC = 09:00 МСК) и вручную.
+# Новые посты дописываются в fund.json, фото — в public/images.
+# Деплой на Vercel происходит автоматически после пуша.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vk-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright + Chromium
+        run: |
+          pip install --quiet playwright requests
+          python -m playwright install --with-deps chromium
+
+      - name: Run VK sync
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: python scripts/ci_vk_sync.py
+
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Изменений нет — коммит не нужен"
+          else
+            git commit -m "VK sync: новые посты из группы (авто)"
+            git push
+          fi
