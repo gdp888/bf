@@ -1,0 +1,204 @@
+---
+import Layout from '../layouts/Layout.astro';
+import fundData from '../data/fund.json';
+
+const { bank_details, ways_to_help, fund_info } = fundData;
+---
+
+<Layout title="Как помочь — БФ «Достижение-Дети»">
+  <!-- Hero -->
+  <section class="relative py-20 bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2250%22%20height%3D%2250%22%20viewBox%3D%220%200%2050%2050%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Cpath%20d%3D%22M25%200L50%2025L25%2050L0%2025z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white/90 text-sm font-medium mb-6">
+        💝 Способы помощи
+      </span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+        Как помочь детям?
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        Каждый вклад, даже самый маленький, приближает наших детей к их мечте.
+        Выберите удобный для вас способ поддержки.
+      </p>
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Ways to Help -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
+        {ways_to_help.map((way) => (
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group hover:-translate-y-1 border border-gray-100">
+            <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+              {way.icon}
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 mb-2">{way.title}</h3>
+            <p class="text-gray-600 text-sm">{way.description}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Bank Details -->
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+          <div class="bg-gradient-to-r from-primary-600 to-primary-700 p-8 text-white">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-3xl">
+                🏦
+              </div>
+              <div>
+                <h2 class="text-2xl font-bold">Реквизиты для перевода</h2>
+                <p class="text-primary-100">{bank_details.fund_name}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="bg-gray-50 rounded-xl p-4 group hover:bg-primary-50 transition-colors cursor-pointer" onclick="navigator.clipboard.writeText('{bank_details.inn}')">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">ИНН</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <span class="font-mono font-semibold text-lg text-gray-900">{bank_details.inn}</span>
+                    <span class="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity text-sm">📋</span>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-4 group hover:bg-primary-50 transition-colors cursor-pointer" onclick="navigator.clipboard.writeText('{bank_details.kpp}')">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">КПП</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <span class="font-mono font-semibold text-lg text-gray-900">{bank_details.kpp}</span>
+                    <span class="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity text-sm">📋</span>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-4 group hover:bg-primary-50 transition-colors cursor-pointer" onclick="navigator.clipboard.writeText('{bank_details.bik}')">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">БИК</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <span class="font-mono font-semibold text-lg text-gray-900">{bank_details.bik}</span>
+                    <span class="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity text-sm">📋</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="bg-gray-50 rounded-xl p-4 group hover:bg-primary-50 transition-colors cursor-pointer" onclick="navigator.clipboard.writeText('{bank_details.account}')">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">Расчётный счёт (Р/с)</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <span class="font-mono font-semibold text-lg text-gray-900">{bank_details.account}</span>
+                    <span class="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity text-sm">📋</span>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-4">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">Банк</label>
+                  <div class="mt-1">
+                    <span class="font-semibold text-lg text-gray-900">{bank_details.bank}</span>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-4 group hover:bg-primary-50 transition-colors cursor-pointer" onclick="navigator.clipboard.writeText('{bank_details.correspondent_account}')">
+                  <label class="text-xs text-gray-500 uppercase tracking-wide font-medium">Корр. счёт</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <span class="font-mono font-semibold text-lg text-gray-900">{bank_details.correspondent_account}</span>
+                    <span class="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity text-sm">📋</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <p class="text-amber-800">
+                <strong>📌 Назначение платежа:</strong> «{bank_details.payment_purpose}»
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VK Donut -->
+        <div class="mt-10 bg-gradient-to-br from-[#0077FF] to-[#0055CC] rounded-3xl p-8 md:p-12 text-white shadow-xl">
+          <div class="md:flex items-center justify-between gap-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+                <h3 class="text-2xl font-bold">VK Donut</h3>
+              </div>
+              <p class="text-blue-100 mb-6 max-w-md">
+                Поддержите нас через официальный виджет VK Donut. Нажмите кнопку «Поддержать автора» в нашей группе.
+              </p>
+              <a 
+                href="https://vk.ru/dostigenie_deti"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 bg-white text-[#0077FF] hover:bg-blue-50 px-6 py-3 rounded-full font-semibold transition-all hover:shadow-lg"
+              >
+                <span>Перейти в группу</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </a>
+            </div>
+            <div class="hidden md:block text-8xl">
+              💙
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code Instructions -->
+        <div class="mt-10 bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+          <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+            <span class="text-2xl">📱</span>
+            Оплата по QR-коду в приложении банка
+          </h3>
+          <ol class="space-y-4 max-w-2xl">
+            <li class="flex items-start gap-4">
+              <span class="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
+              <span class="text-gray-700 pt-1">Откройте приложение вашего банка</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
+              <span class="text-gray-700 pt-1">Найдите раздел «Оплата по QR-коду» или «Платежи»</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</span>
+              <span class="text-gray-700 pt-1">Сканируйте QR-код фонда (запросите у нас в группе)</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold flex-shrink-0">4</span>
+              <span class="text-gray-700 pt-1">Укажите назначение платежа: «<strong class="text-primary-600">Благотворительность</strong>»</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Thank You -->
+  <section class="py-16 bg-gradient-to-br from-amber-50 to-orange-50">
+    <div class="container mx-auto px-4 text-center">
+      <div class="max-w-2xl mx-auto">
+        <div class="text-6xl mb-6">🙏</div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Спасибо за вашу доброту!
+        </h2>
+        <p class="text-xl text-gray-600 leading-relaxed">
+          Каждый ваш вклад помогает нашим детям становиться ближе к их мечтам.<br/>
+          <strong class="text-primary-600">{fund_info.mission}</strong> ✨
+        </p>
+        
+        <a 
+          href="/"
+          class="inline-flex items-center gap-2 mt-8 text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Вернуться на главную
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

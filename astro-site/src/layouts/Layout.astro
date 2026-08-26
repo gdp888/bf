@@ -1,0 +1,113 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'БФ «Достижение-Дети» — Благотворительный фонд помощи детям с особенностями здоровья' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-amber-50 antialiased">
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+      <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-105 transition-transform">
+            🌟
+          </div>
+          <span class="font-bold text-xl text-gray-800 hidden sm:block">Достижение-Дети</span>
+        </a>
+        
+        <div class="flex items-center gap-6">
+          <a href="/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Главная</a>
+          <a href="/stories" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Истории</a>
+          <a href="/help" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Как помочь</a>
+          <a href="/news" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Новости</a>
+          <a 
+            href="https://vk.ru/dostigenie_deti" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-full font-medium transition-all hover:shadow-lg"
+          >
+            Мы в VK
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="bg-gray-900 text-gray-300 mt-auto">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                🌟
+              </div>
+              <span class="font-bold text-xl text-white">Достижение-Дети</span>
+            </div>
+            <p class="text-sm leading-relaxed">
+              Благотворительный фонд помощи детям с особенностями здоровья. Вместе мы сделаем мир добрее.
+            </p>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-white mb-4">Навигация</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/" class="hover:text-primary-400 transition-colors">Главная</a></li>
+              <li><a href="/stories" class="hover:text-primary-400 transition-colors">Истории детей</a></li>
+              <li><a href="/help" class="hover:text-primary-400 transition-colors">Как помочь</a></li>
+              <li><a href="/news" class="hover:text-primary-400 transition-colors">Новости</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-white mb-4">Контакты</h4>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-center gap-2">
+                <span>📧</span>
+                <span>Напишите нам в VK</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span>🏦</span>
+                <span>АО «АЛЬФА-БАНК»</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span>📋</span>
+                <span>ИНН: 6382076793</span>
+              </li>
+            </ul>
+            <a 
+              href="https://vk.ru/dostigenie_deti" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 mt-4 bg-[#0077FF] hover:bg-[#0066DD] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+              Группа ВКонтакте
+            </a>
+          </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+          <p>&copy; {new Date().getFullYear()} БФ «Достижение-Дети». Все права защищены.</p>
+          <p class="mt-2 text-gray-500">ВМЕСТЕ МЫ СДЕЛАЕМ МИР ДОБРЕЕ ✨</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

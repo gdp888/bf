@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import fundData from '../data/fund.json';
+
+const { posts, fund_info } = fundData;
+
+// Группировка постов по типу
+const postTypes = {
+  pinned: posts.filter(p => p.type === 'pinned'),
+  event: posts.filter(p => p.type === 'event'),
+  call_to_action: posts.filter(p => p.type === 'call_to_action'),
+  media: posts.filter(p => p.type === 'media')
+};
+
+// Получение иконки для типа поста
+function getPostIcon(type: string) {
+  switch(type) {
+    case 'pinned': return '📌';
+    case 'event': return '🎉';
+    case 'call_to_action': return '📢';
+    case 'media': return '🎬';
+    default: return '📝';
+  }
+}
+
+// Получение цвета для типа поста
+function getPostColor(type: string) {
+  switch(type) {
+    case 'pinned': return 'from-amber-400 to-orange-500';
+    case 'event': return 'from-green-400 to-emerald-500';
+    case 'call_to_action': return 'from-primary-400 to-blue-500';
+    case 'media': return 'from-purple-400 to-violet-500';
+    default: return 'from-gray-400 to-gray-500';
+  }
+}
+---
+
+<Layout title="Новости — БФ «Достижение-Дети»">
+  <!-- Hero -->
+  <section class="relative py-20 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M0%2020L20%200L40%2020L20%2040z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white/90 text-sm font-medium mb-6">
+        📰 Последние новости
+      </span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+        Новости фонда
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        Будьте в курсе всех событий, мероприятий и успехов наших детей.
+        Все новости — из нашей группы ВКонтакте.
+      </p>
+      
+      <a 
+        href="https://vk.ru/dostigenie_deti"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 mt-8 bg-white/10 hover:bg-white/20 border border-white/30 text-white px-6 py-3 rounded-full font-medium transition-all"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+        <span>Все новости в VK</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Posts Grid -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <!-- Pinned Post -->
+      {postTypes.pinned.length > 0 && (
+        <div class="mb-12">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span>📌</span> Важное
+          </h2>
+          {postTypes.pinned.map((post) => (
+            <article class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all">
+              <div class="md:flex items-start gap-6">
+                <div className="hidden md:flex w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl items-center justify-center text-3xl flex-shrink-0">
+                  {getPostIcon(post.type)}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="bg-amber-200 text-amber-800 px-3 py-1 rounded-full text-xs font-medium">Важно</span>
+                    <span className="text-gray-500 text-sm">{post.date}</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">{post.title}</h3>
+                  <p className="text-gray-700 leading-relaxed text-lg">{post.content}</p>
+                  <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+                    <span className="flex items-center gap-1">❤️ {post.reactions} реакций</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <!-- Other Posts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.filter(p => p.type !== 'pinned').map((post) => (
+          <article class={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden group hover:-translate-y-1`}>
+            <div class={`h-2 bg-gradient-to-r ${getPostColor(post.type)}`}></div>
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">{getPostIcon(post.type)}</span>
+                <span class="text-gray-500 text-sm">{post.date}</span>
+              </div>
+              
+              <h3 class="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                {post.title}
+              </h3>
+              
+              <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                {post.content}
+              </p>
+              
+              <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="flex items-center gap-1 text-sm text-gray-500">
+                  ❤️ {post.reactions}
+                </span>
+                <span class="text-primary-600 text-sm font-medium group-hover:underline cursor-pointer">
+                  Подробнее →
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Load More CTA -->
+      <div class="mt-12 text-center">
+        <a 
+          href="https://vk.ru/dostigenie_deti"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 bg-[#0077FF] hover:bg-[#0066DD] text-white px-8 py-4 rounded-full font-semibold transition-all hover:shadow-xl hover:scale-105"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+          <span>Все новости в группе ВК</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <p class="text-gray-500 text-sm mt-4">
+          Всего {fundData.stats.posts} публикаций в нашей группе
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
