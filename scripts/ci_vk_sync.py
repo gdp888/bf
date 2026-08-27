@@ -208,14 +208,19 @@ COLLECT_JS = """
 
 DETAIL_JS_TEMPLATE = """
 (() => {
-  const byId = document.querySelector('[data-post-id="-%GID%_%PID%"]');
-  const art = byId || document.querySelector('article');
-  const wall = (art && (art.querySelector('.wall_text')
-             || art.querySelector('.wall_post_cont')))
-             || document.querySelector('.wall_text')
-             || document.querySelector('.wall_post_cont')
-             || art;
-  const txt = ((wall && wall.innerText) || '').trim();
+  // Находим основной пост (не reply_dived - это репосты/комментарии)
+  const byId = document.querySelector('[data-post-id="-%GID%_%PID%"]:not(.reply_dived)');
+  const postEl = byId || document.querySelector('.post[data-post-id]:not(.reply_dived)') || document.querySelector('.post:not(.reply_dived)');
+  
+  // Текст ищем внутри .wall_text или .wall_post_cont внутри поста
+  let txt = '';
+  if (postEl) {
+    const wallText = postEl.querySelector('.wall_text');
+    const wallPostCont = postEl.querySelector('.wall_post_cont');
+    txt = ((wallText || wallPostCont || postEl).innerText || '').trim();
+  }
+  
+  // Дата из .rel_date или time
   let date = '';
   const rd = document.querySelector('.rel_date, time');
   if (rd) date = rd.innerText.trim();
@@ -226,6 +231,8 @@ DETAIL_JS_TEMPLATE = """
           && t.length < 20) { date = t; break; }
     }
   }
+  
+  // Картинки
   const seen = new Set(); const imgs = [];
   document.querySelectorAll('img').forEach(im => {
     if (!/vkuserphoto|userapi|impg/.test(im.src)) return;
@@ -347,9 +354,14 @@ def main() -> int:
             try:
                 page.goto(f'https://vk.ru/wall-{GROUP_ID}_{pid}',
                           wait_until='domcontentloaded', timeout=60000)
-                time.sleep(2.5)
+                # Ждём появления основного поста (не reply_dived)
+                try:
+                    page.wait_for_selector(f'[data-post-id="-{GROUP_ID}_{pid}"]:not(.reply_dived), .post:not(.reply_dived)', timeout=15000)
+                except Exception:
+                    pass
+                time.sleep(3.0)
                 page.evaluate('window.scrollBy(0, 700)')
-                time.sleep(1.2)
+                time.sleep(1.5)
                 det = page.evaluate(DETAIL_JS_TEMPLATE)
             except Exception as e:
                 log(f'  detail fail: {e}')
