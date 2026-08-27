@@ -83,9 +83,9 @@ const sortedStories = [...stories].sort(
         <div class="grid md:grid-cols-2 gap-8">
           {sortedStories.map((story) => {
             const isClosed = story.status.includes('закрыт');
-            const firstName = story.name.split(' ')[0];
             return (
-              <article class={`bg-white rounded-3xl shadow-xl overflow-hidden border transition-all duration-300 group flex flex-col hover:shadow-2xl hover:-translate-y-1 ${isClosed ? 'border-emerald-100' : 'border-gray-100'}`}>
+              <article class={`bg-white rounded-3xl shadow-xl overflow-hidden border transition-all duration-300 group flex flex-col relative cursor-pointer hover:shadow-2xl hover:-translate-y-1 ${isClosed ? 'border-emerald-100' : 'border-gray-100'}`}>
+                <a href={`/posts/${story.post_slug}`} class="absolute inset-0 z-10" aria-label={`История: ${story.name}`}></a>
                 <div class="relative h-56 overflow-hidden">
                   {story.image ? (
                     <img
@@ -112,35 +112,12 @@ const sortedStories = [...stories].sort(
                 </div>
 
                 <div class="p-6 md:p-7 flex flex-col flex-1">
-                  <h3 class="text-2xl font-bold text-gray-900">{story.name}</h3>
+                  <h3 class="text-2xl font-bold text-gray-900 group-hover:text-primary-700 transition-colors">{story.name}</h3>
                   <p class="text-gray-500 text-sm mt-1">{story.age} • {story.condition}</p>
                   <p class="text-gray-700 mt-4 leading-relaxed flex-1">{story.goal}</p>
-
-                  <div class="mt-6">
-                    {isClosed ? (
-                      <a
-                        href={`/posts/${story.post_slug}`}
-                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-center py-3.5 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2"
-                      >
-                        <span>📖</span> История успеха
-                      </a>
-                    ) : (
-                      <>
-                        <a
-                          href="/help"
-                          class="w-full bg-primary-500 hover:bg-primary-600 text-white text-center py-3.5 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2"
-                        >
-                          <span>❤️</span> Помочь {firstName}
-                        </a>
-                        <a
-                          href={`/posts/${story.post_slug}`}
-                          class="block text-center text-sm text-gray-500 hover:text-primary-600 mt-3 transition-colors"
-                        >
-                          История ребёнка →
-                        </a>
-                      </>
-                    )}
-                  </div>
+                  <p class="text-sm font-medium text-primary-600 mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Читать историю →
+                  </p>
                 </div>
               </article>
             );
