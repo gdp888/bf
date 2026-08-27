@@ -34,6 +34,7 @@
       "status": "Активный сбор средств",
       "post_slug": "pomoshch-samiru-gabdullinu",
       "image": "/images/post-1334-02.jpg",
+      "image_pos": "top",
       "date_added": "2026-07-10"
     },
     {
@@ -46,6 +47,7 @@
       "status": "Активный сбор средств",
       "post_slug": "pomoshch-vane-reabilitatsiya",
       "image": "/images/post-1348-01.jpg",
+      "image_pos": "top",
       "date_added": "2026-07-25"
     },
     {
@@ -58,6 +60,7 @@
       "status": "Сбор закрыт",
       "post_slug": "sbor-zakryt-saveliy",
       "image": "/images/post-1337-02.jpg",
+      "image_pos": "top",
       "date_added": "2026-07-16"
     },
     {
@@ -70,6 +73,7 @@
       "status": "Активный сбор средств",
       "post_slug": "eva-reabilitatsiya-kazan",
       "image": "/images/post-1319-02.jpg",
+      "image_pos": "center 30%",
       "date_added": "2026-06-22"
     }
   ],

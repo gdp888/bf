@@ -3,6 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import fundData from '../data/fund.json';
 
 const { fund_info, stories, stats } = fundData;
+// кадрирование фото: голова ребёнка не должна срезаться (классы литералами для Tailwind JIT)
+const POS_CLASS = {
+  'top': 'object-top',
+  'center 30%': 'object-[position:center_30%]',
+};
 // сначала активные сборы, закрытые — в конце
 const sortedStories = [...stories].sort(
   (a, b) => (a.status.includes('закрыт') ? 1 : 0) - (b.status.includes('закрыт') ? 1 : 0)
@@ -91,7 +96,7 @@ const sortedStories = [...stories].sort(
                     <img
                       src={story.image}
                       alt={story.name}
-                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      class={`w-full h-full object-cover ${POS_CLASS[story.image_pos] || ''} group-hover:scale-105 transition-transform duration-500`}
                       loading="lazy"
                     />
                   ) : (

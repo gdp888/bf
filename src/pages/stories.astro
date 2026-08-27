@@ -3,6 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import fundData from '../data/fund.json';
 
 const { stories, fund_info } = fundData;
+// кадрирование фото: классы литералами для Tailwind JIT
+const POS_CLASS = {
+  'top': 'object-top',
+  'center 30%': 'object-[position:center_30%]',
+};
 ---
 
 <Layout title="Истории детей — БФ «Достижение-Дети»">
@@ -40,7 +45,7 @@ const { stories, fund_info } = fundData;
               <div class="md:flex">
                 <div class="md:w-1/3 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center overflow-hidden">
                   {story.image ? (
-                    <img src={story.image} alt={story.name} class="w-full h-64 md:h-full object-cover" loading="lazy" />
+                    <img src={story.image} alt={story.name} class={`w-full h-64 md:h-full object-cover ${POS_CLASS[story.image_pos] || ''}`} loading="lazy" />
                   ) : (
                     <div class="text-8xl group-hover:scale-110 transition-transform duration-300 py-16">👦</div>
                   )}
