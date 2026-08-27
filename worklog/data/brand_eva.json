@@ -1,0 +1,518 @@
+{
+ "group_page": {
+  "og": null,
+  "imgs": [
+   {
+    "src": "https://sun1-95.vkuserphoto.ru/tOun0PHBIL_uxi4XUB2lqFkzM2dlMJxr1qaDww/N0puPWQhpFg.png",
+    "w": 60,
+    "h": 60,
+    "dx": 101,
+    "dy": 325,
+    "dw": 20,
+    "dh": 20,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-78.vkuserphoto.ru/s/v1/ig2/Uw6FHYddQDpHQu8Ujwl0FTwBkfPxeNjJaW3JoHRWYJqyOSQxV4iFvnBNtyJQ7XPUlyehiSxxy9uT9fyJvv807nO6.jpg?quality=95&crop=29,90,1509,1509&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=iZYc_ZhNWnOJ6nSmZwOj_wpilDjHNSVGW7eEy3EcAdk&cs=200x200",
+    "w": 240,
+    "h": 240,
+    "dx": 285,
+    "dy": 346,
+    "dw": 96,
+    "dh": 96,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-7.vkuserphoto.ru/impg/kpVTDFqq8rOtkEAOUnrdSaOT1Er2zMPH_3T3YQ/KTdlsu9X1-c.jpg?size=360x640&quality=95&sign=727a021cd90a2722fe0b6c276d68854f&c_uniq_tag=Jve67eM7FmUAvPN-H65a6KF3Pq65e7QV9Nko8DR8rKA&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 287,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-70.vkuserphoto.ru/impg/26AhrIgDiL0NbhFz9XlWBN0cdgAQRXXKUFfHjQ/B9zrLIisNFM.jpg?size=360x640&quality=95&sign=caa3853c917a8e9eaf7bc26a86d00a77&c_uniq_tag=jGRfwP3lNUGMmXQRbGiO5-9gBuLq0EIBpcmzQ0c_hZs&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 461,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-18.vkuserphoto.ru/impg/kpWsZGg_ikkiUSe73PEtP_Sl1jL-xlnVDQucsw/LX-dZtRc9V4.jpg?size=360x640&quality=95&sign=d0a92d9fb5e57b093396e5caf9514ede&c_uniq_tag=RMoensdIG0fMRMlQiT5UOA9yvc7vY04qDqT1KgPMORY&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 635,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-43.vkuserphoto.ru/impg/OyR1OqWHAk81hd5QGJ3hAAatIoKxuddmX4cIpA/HDGC6yHJeEw.jpg?size=360x640&quality=95&sign=a7ab033a4a1a3824ac3d2d8b11f966a7&c_uniq_tag=PpINGef5qLZC4STRX2f67yqtH71sa-wwang0zUJo8O0&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 809,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-64.vkuserphoto.ru/impg/RnqrpXkOcaOBUyq95ku-dCS-YjVXazDJkVkwvw/QA23xhQTXFs.jpg?size=360x640&quality=95&sign=481c2529c03cc8c1481a1858e1ecc93d&c_uniq_tag=h4DytmgermsvYdB2sRU0kgnnV_hMjUjcN98Ko4UZuNI&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 983,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-64.vkuserphoto.ru/impg/RnqrpXkOcaOBUyq95ku-dCS-YjVXazDJkVkwvw/U4sQsN6op6k.jpg?size=360x640&quality=95&sign=3998f5bd6d4809109096f65b53434235&c_uniq_tag=H1cQ8lVpeuN9G2wOUQkZTG6YAkZ7C-uX35lNdWNN6Ck&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 1157,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-2.vkuserphoto.ru/impg/LWhKN5z_x1SELHMf1uze8TrAvhBYWnUhTJE8Vw/OvNEZbD4PBA.jpg?size=360x640&quality=95&sign=8afece29774a5aa578eeb1d6d4c2e411&c_uniq_tag=0PhJUb6fnWk1jtBh0CBaWQoWweh2AsejVWiQhCVoa64&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 1331,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-3.vkuserphoto.ru/impg/TFe5ynMD0KfSxYdXTlpA-z2GA7vX960d8FU3_Q/zYbHjyJWTMc.jpg?size=360x640&quality=95&sign=96ec26499dd23d150ed98622d45f21e4&c_uniq_tag=2Z4zv2ohUrNx66dniMo9kNqsrA3J2UbVZQ0Tg3P6-xM&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 1505,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-26.vkuserphoto.ru/impg/6HjDePvb91ZV3IGWHKhB7D7mj1xFJUANMJU5yg/F_S-hsmx4Wg.jpg?size=360x640&quality=95&sign=952607b013a290d9566aaff4de14175e&c_uniq_tag=seJRVeP6q0cWySlHzgtsp03CqKqzqOHQQEOotk6yjRI&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 1679,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-73.vkuserphoto.ru/impg/IavxyJqESYrojOWFP26ybnf7PvSnh9K0w6Mauw/MhmSZjv4kkU.jpg?size=360x640&quality=95&sign=21dd482461a5a0fd6308eb4dc6b415e4&c_uniq_tag=jaRsH6MPYNx8MhSTZiTY0Mp0WrfKBm2WOMyNeSQl9wU&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 1853,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-1.vkuserphoto.ru/impg/7-Wqq3cUCcBF9PW1RXNyAAltaaCclaSmhPXH7g/wbahnhQB0uQ.jpg?size=360x640&quality=95&sign=8326c579e37e44a3f421d219e3838958&c_uniq_tag=i4eYE7u-3J9CHwaUlwq7XwMrv8jci5hVmiXhntT0YK4&type=video_thumb",
+    "w": 360,
+    "h": 640,
+    "dx": 2027,
+    "dy": 539,
+    "dw": 160,
+    "dh": 284,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-50.vkuserphoto.ru/s/v1/ig2/-oae0SFhU8zu6j0IZZfPk8Gx6bwIf-WjTFLSghSHIOQfF9bp6IQUcI0N_jug1gdIZaKYoEVzhDw4jL2w173GhJIf.jpg?quality=95&as=32x34,48x52,72x77,108x116,160x172,240x258,360x387,480x517,540x581,640x689,720x775,1024x1102&from=bu&u=2MWImoqycJzTCwH0dl43y5Y7vD6r35ErUWNDmU4X8vw&cs=640x0",
+    "w": 640,
+    "h": 689,
+    "dx": 265,
+    "dy": 972,
+    "dw": 295,
+    "dh": 318,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-79.vkuserphoto.ru/s/v1/ig2/trcmNkpFgy53bfmNmYMc6Sy9UeGVz_X1twMYioi_0RywyLZFsecky91uYdZSJF_EnBFNA9RL0ZLoShZ7ie8cP_0S.jpg?quality=95&as=32x40,48x60,72x90,108x135,160x200,240x300,360x450,480x600,540x675,640x800,720x900,1080x1350&from=bu&u=a6xF0PNBzYQHQAGDCIAeD-r6EWzyxwT26z7ofLreem4&cs=640x0",
+    "w": 640,
+    "h": 800,
+    "dx": 562,
+    "dy": 972,
+    "dw": 254,
+    "dh": 318,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://pp.vkuserphoto.ru/94aVrHyY-wHPkZnMULeXIFx8l7bTfrHK4yPPBA/QulWsGFAn5k.png",
+    "w": 50,
+    "h": 50,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "AvatarRich__img",
+    "alt": "DELETED"
+   },
+   {
+    "src": "https://sun9-9.vkuserphoto.ru/s/v1/ig2/YSqcvw3wd65nDpdOfzgScAP_g4lFQ-zNex0Oz5VlCSxQjLn-bDsP6_vZ9iom5BtnflYygLGtf3FfdYUBgixsCbB6.jpg?quality=95&crop=253,534,1609,1609&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 285,
+    "dy": 2067,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Natalya Koscheeva"
+   },
+   {
+    "src": "https://sun9-53.vkuserphoto.ru/s/v1/ig1/uDx4fKYlYNhqy6kEaM4Ji4LaYtB3iWND6XKWoKQ3Ws9OTSf9h_UA4T_RIRaQAUqGcspasoh2.jpg?quality=96&crop=0,239,765,765&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 285,
+    "dy": 2136,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Andrey Kiashko"
+   },
+   {
+    "src": "https://sun9-21.vkuserphoto.ru/s/v1/ig2/JVKbEh69vLcDWEeIf9Z5SFThg6WNq4MGqdx_ZGWVid3JaVvW9kKANC7ie_Y-PFV7G4__U3jLegUz2haOxCuHRn8i.jpg?quality=95&crop=259,62,378,378&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 285,
+    "dy": 2204,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Anna Shtofel"
+   },
+   {
+    "src": "https://sun9-85.vkuserphoto.ru/s/v1/ig2/WcBH98G2PEu5TN-a8n6YoYADSWbkd0vumhc_ShoNTjDcqTh589IXRu2maIVnCZ1j1zDwjChIWHvZ3PLK46u1o56u.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&u=kpO3JM-BVNtYehUeZtXlOXAfjDNBpjFrxG4IP2Dfn98&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-61.vkuserphoto.ru/s/v1/ig2/ddkmakeS3aqAp9ukHH8QHEMmJ4Ntd6eSGZvssJljeR5uv6BrTryyqr_4XDqH-IitG0dwzepbVBtx2mVXGq-Uys08.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961&from=bu&u=xKKpg6VWxiht3SEKdkuu6oADLT9MVJhQ2-v7JFbEuSY&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-10.vkuserphoto.ru/s/v1/ig2/NgOeKgaEpJ1LjOtu-z8zeRR-rzIBxh6CW-SqXFlUczN3jHXWWZCed9msTA-8ftB3lTI9BXGhlAhyIOvrTOcWo5ci.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960&from=bu&u=gQt54ny6v_GP6VEPESLSD7fDnBsD8fAG8VUdnpQL4o8&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-21.vkuserphoto.ru/s/v1/ig2/75-pm3hft6Q5ydukJEcueP4-dF2xZUoLZAJsLToDhz28zf32Nu0FT_mkAfwAyWZtR_AfZwmvooaGFdOesKOUvels.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&u=eXRoXWVI01j3Xft0KOgXRf4PYt4N6BmMmCMUl1TzT_E&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-22.vkuserphoto.ru/s/v1/ig2/p3Gn9dcPBafE8TO0w9mqkrxwOVZNSuE8FoLS91cjw6o5lSRigBy3B3wkpLbK977wuWuuT--kCS1lOJ4iz06ZHPea.jpg?quality=95&as=32x39,48x59,72x88,108x132,160x195,240x293,360x440,480x586,540x659,640x782,720x879,1080x1319&from=bu&u=2Z4pIdhFlmCAY2DwWXHtlptps4NsOo5qqAvntve8C7c&cs=640x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-11.vkuserphoto.ru/s/v1/ig2/QBgUw4hYQ2ebJ9rtf-ZnG8mYOrAqDs7AdKqTxwln3CR_7Z4oUlnzQfnfxicVwVj_8S0FtnfGGvIqB03uZzhqDLrJ.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&u=6Ong8YOU-LAgusg31Y_gOeEF1OcPa_4bSfT_dcHidbo&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-37.vkuserphoto.ru/s/v1/ig2/yvQhbOFTQGn5QvvFgY1miBbMHb4DQ_8jR_jLfrygX4U5t9od7ewX41LN9OrmtehFn_RJroYrOwT3BtAkgT3T5IRq.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440,2295x2295&from=bu&u=KCO7whKekqW8wVTB8ty-SEsHGBK2rL7MpRUiI4CFwBc&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-85.vkuserphoto.ru/s/v1/ig2/vmkokaJK-5slzsY_5s9hFOMOtvVBROrCY9p4_abRvL15f94LF8riHksodI-ngnJf5cZ5uzGi545EkSpsgyAPhiLL.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440,2295x2295&from=bu&u=S6xkR_lcO64WVHJ9GHpshlyh972lCe-rv1R9ulMgyhs&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-45.vkuserphoto.ru/s/v1/ig2/jxPPQp-d5rPyWj3gKHY2Xe9umwgNS_Opwiyz0OesQm9SjvtN1_AOOgc7tRxuE9nBe_55bCbClpkMd8NytGLynYKx.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=zWF9YHITrnls_xMIyUmjjYZB3KBDxHDWS8CTdaWkxaM&cs=540x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-58.vkuserphoto.ru/s/v1/ig2/JqfdwI8CC1UpumX6jlHUAiQgvFiqg8zznZjzVxxhct1tRMwTyuhr70R6bZgA78VF98OjOSm8L0Xav3uG27ve62-w.jpg?quality=95&crop=482,804,954,954&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 285,
+    "dy": 5595,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Katya Khutorskaya"
+   },
+   {
+    "src": "https://sun9-68.vkuserphoto.ru/s/v1/ig2/0-bHo9o0s3Wro5rdiPI96_4U-1iXMhAYNBOKVFCJO1I-xeD8Ur44YqhBYw6J6MPnn0EVw35WUrTtvGj6Qg2ddxa6.jpg?quality=95&crop=866,214,977,977&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 285,
+    "dy": 6784,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Svetlana Matveeva"
+   },
+   {
+    "src": "https://sun9-9.vkuserphoto.ru/s/v1/ig2/bIPnQrZQB-mg0zo_2HwTtu1WB6ODH6sNCjOvyKKh0enzhcilBuukW_3Z1KdXubNvfdayZxJnfhKEKhddEXvHcy_i.jpg?quality=95&crop=0,0,1280,853&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x426,720x480,1080x720,1280x853&from=bu&u=XizfG4yLYfJOI4qJVpNikN3vVtBCbFZJnHoa6Akw9kY&cs=640x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-CZsWTM vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-21.vkuserphoto.ru/s/v1/ig2/XX4RCCIJ1lXjU-L-k7OQKGnZRVyDrfqCutX1YGeYY-3JCxI8RuM0KtAMVAOn8sAvfaUGliFtKxKFjG1C7mzjfZiH.jpg?quality=95&crop=208,244,604,604&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 323,
+    "dy": 8786,
+    "dw": 24,
+    "dh": 24,
+    "cls": "AvatarRich__img",
+    "alt": "Tatyana Ovchinnikova"
+   },
+   {
+    "src": "https://sun9-13.vkuserphoto.ru/s/v1/ig2/3SNQW_3WMCincYAlf2hstEoFWs_MOacVNfYpOaWj_RIW0kB7cxc75qp-x_gU0j6tsKZnnzi4G-g7inQ1Rdv9qjuq.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,765x1020&from=bu&u=1HNr7FVmoegYnTCDKtzOI8rl4vi7W90JzdYUydZwuqk&cs=640x0",
+    "w": 0,
+    "h": 0,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-21.vkuserphoto.ru/s/v1/ig2/YatyengtQeWdrcyx-gKgYl3Ih8hndLN0gWkWbdfTGH6RnfG5DLlN_Kqf_tBHNY7FTV79vTlt38FuyL67yswrogpe.jpg?quality=95&crop=208,244,604,604&blur=5,10&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540&ava=1&u=bfaVHJiaTbNENZPq7RdinchRd-AclKM3eRU6lDkd51M&cs=200x200",
+    "w": 240,
+    "h": 240,
+    "dx": 852,
+    "dy": 758,
+    "dw": 48,
+    "dh": 48,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": "Tatyana Ovchinnikova"
+   },
+   {
+    "src": "https://sun9-8.vkuserphoto.ru/s/v1/ig1/qNv5_ZuAARETKmsc4DtQC3PlOdO03EUnB64ECJLCsT6baEdO3tQrPzCTU21VJvVJu321PWKE.jpg?quality=96&crop=45,45,1033,1033&blur=5,10&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1&u=EQMIGqqokw-slHXNMdk8VE9sUfgcT2bCW_THivJxEZ4&cs=200x200",
+    "w": 240,
+    "h": 240,
+    "dx": 852,
+    "dy": 831,
+    "dw": 48,
+    "dh": 48,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": "Olga Prikhodko"
+   },
+   {
+    "src": "https://sun9-25.vkuserphoto.ru/s/v1/ig2/d0Bid3h63qndSEwtIfds3iRv3mRUQzIWTrZ--ippZjFgUxJNGYArZqgAiK-VWsmy6klXMxZqpcBzkxberm7j9oCY.jpg?quality=95&crop=3,127,1481,1481&blur=5,10&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=eifJr1T9-ZZSarIaqC5w1OWD4bfnEN8PitZrVAgeez4&cs=200x200",
+    "w": 240,
+    "h": 240,
+    "dx": 852,
+    "dy": 912,
+    "dw": 48,
+    "dh": 48,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": "Yulia Rudneva"
+   }
+  ],
+  "bgs": [
+   {
+    "src": "https://sun9-66.vkuserphoto.ru/KYF79qg8mkkczFS6cBzWiuLwOGQo_sXnjvDgcg/VScj5nH3-DI.jpg",
+    "dx": 265,
+    "dy": 64,
+    "dw": 912,
+    "dh": 303,
+    "cls": "vkit-HWXvXe"
+   }
+  ]
+ },
+ "post_1319": {
+  "og": null,
+  "imgs": [
+   {
+    "src": "https://sun1-95.vkuserphoto.ru/tOun0PHBIL_uxi4XUB2lqFkzM2dlMJxr1qaDww/N0puPWQhpFg.png",
+    "w": 60,
+    "h": 60,
+    "dx": 159,
+    "dy": -138,
+    "dw": 20,
+    "dh": 20,
+    "cls": "vkuiImageBase__img vkuiImageBase__imgObjectFitCover",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-78.vkuserphoto.ru/s/v1/ig2/Uw6FHYddQDpHQu8Ujwl0FTwBkfPxeNjJaW3JoHRWYJqyOSQxV4iFvnBNtyJQ7XPUlyehiSxxy9uT9fyJvv807nO6.jpg?quality=95&crop=29,90,1509,1509&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 912,
+    "dy": 80,
+    "dw": 34,
+    "dh": 34,
+    "cls": "ui_ownblock_img",
+    "alt": "БФ «Достижение-Дети»"
+   },
+   {
+    "src": "https://sun9-84.vkuserphoto.ru/s/v1/ig2/zDydZribCkkHco--whra86zgHXdwlSjV9HWNoapITmt1M_6GZP_1NSUUV5jnF8ut6kImoGoKJmHUjGjtgDnfJcLU.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707&from=bu&u=-Ho7-eJsUZe7Rq5TzPbfjzthLQtY0J2f2pUJ8wN1low&cs=640x0",
+    "w": 640,
+    "h": 853,
+    "dx": 323,
+    "dy": -331,
+    "dw": 275,
+    "dh": 366,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-38.vkuserphoto.ru/s/v1/ig2/cMZJ7vEocZicqmzNrQ1WJxdo1aVxgZ7YyKHJ3Y6TVmZ4vkeoTVD3wQ8EFOO5ty-Z0cTPm4fFZb6iBjZtXWZp9Q-M.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707&from=bu&u=I-SvtKq8i4anrE8TJ5xUDbxLU13Ik8eHkbNL133VXT4&cs=640x0",
+    "w": 640,
+    "h": 853,
+    "dx": 600,
+    "dy": -331,
+    "dw": 275,
+    "dh": 366,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-36.vkuserphoto.ru/s/v1/ig2/2REirkf-jgmM7i6B-_Vys0J45zpwch5LhJjiOj_YlUWhpEEkgK21v27WvR-ec1k6yC8hSMSaUj81j1jC5NAlBvv4.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960&from=bu&u=l-ip-Hv9udJqdD8qZQJCPGlIC9BD1n6B8qWcSZ1O4M4&cs=240x0",
+    "w": 240,
+    "h": 180,
+    "dx": 323,
+    "dy": 37,
+    "dw": 109,
+    "dh": 109,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-54.vkuserphoto.ru/s/v1/ig2/435u3_gPvvWyD6kCAGQa_zth1qIZQH0O3xWQmlkj4ZIoLFLdumtrOaG1k1VzFdyK2NfF0-iU5-DYUGaXawH4MmoC.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707&from=bu&u=sL_h8yyVaih-JObfrRm6ZmyxdleC3hzjbH0Lkq7V7Ng&cs=360x0",
+    "w": 360,
+    "h": 480,
+    "dx": 434,
+    "dy": 37,
+    "dw": 109,
+    "dh": 109,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun9-74.vkuserphoto.ru/s/v1/ig2/Q-XPYx4TBxk00xvO0AyN4WgxiF9e4BdmZheAQrt3QwfvdCPXK6a6l27StoM4-8mcZeLoVbfL8vjeutDvlSw0v3dh.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960&from=bu&u=gf-iE6by-8NFl4h2Sijj_yN98JGIdRNnt9Xt3VNg9cQ&cs=240x0",
+    "w": 240,
+    "h": 180,
+    "dx": 655,
+    "dy": 37,
+    "dw": 109,
+    "dh": 109,
+    "cls": "vkit-60h5hf vkit-VPuXG4",
+    "alt": ""
+   },
+   {
+    "src": "https://sun1-22.vkuserphoto.ru/s/v1/ig2/JqfdwI8CC1UpumX6jlHUAiQgvFiqg8zznZjzVxxhct1tRMwTyuhr70R6bZgA78VF98OjOSm8L0Xav3uG27ve62-w.jpg?quality=95&crop=482,804,954,954&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1&cs=50x50",
+    "w": 72,
+    "h": 72,
+    "dx": 343,
+    "dy": 684,
+    "dw": 28,
+    "dh": 28,
+    "cls": "AvatarRich__img",
+    "alt": "Katya Khutorskaya"
+   },
+   {
+    "src": "https://pp.vkuserphoto.ru/94aVrHyY-wHPkZnMULeXIFx8l7bTfrHK4yPPBA/QulWsGFAn5k.png",
+    "w": 50,
+    "h": 50,
+    "dx": 0,
+    "dy": 0,
+    "dw": 0,
+    "dh": 0,
+    "cls": "AvatarRich__img",
+    "alt": "DELETED"
+   }
+  ],
+  "bgs": []
+ }
+}

@@ -416,6 +416,12 @@ def main() -> int:
         json.dumps(data, ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8')
     log(f'MERGED: +{len(created)} posts, total {len(all_posts)}')
+    # отчёт в worklog/autosync.log — уйдёт в тот же автокоммит (история работы робота)
+    stamp = datetime.now(MSK).strftime('%Y-%m-%d %H:%M МСК')
+    rep = [f'{stamp} | +{len(created)} пост(ов) | id: {", ".join(p["vk_id"] for p in created)}']
+    rep += [f'    {p["vk_id"]}: {p["title"][:80]}' for p in created]
+    with open(ROOT / 'worklog' / 'autosync.log', 'a', encoding='utf-8') as f:
+        f.write('\n'.join(rep) + '\n')
     return 0
 
 
