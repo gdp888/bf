@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import JsonLd from '../../components/JsonLd.astro';
 import allPosts from '../../data/all_posts.json';
 
 export function getStaticPaths() {
@@ -25,6 +26,83 @@ const ogImage = images[0] || videos[0]?.image || '/images/fund-cover.jpg';
 function formatDate(d) {
   return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 }
+
+// ─── Schema.org ───
+const BASE = Astro.site!.href;
+const abs = (p: string) => new URL(p, Astro.site).href;
+const pageUrl = new URL(Astro.url.pathname.replace(/([^/])$/, '$1/'), Astro.site).href;
+const isoDate = (post.date || '').replace(' ', 'T');
+
+// ISO 8601 длительность: 282с → PT4M42S
+function isoDur(s) {
+  if (typeof s !== 'number' || !s || s <= 0) return undefined;
+  const m = Math.floor(s / 60);
+  const r = Math.round(s % 60);
+  return m > 0 ? `PT${m}M${r}S` : `PT${r}S`;
+}
+
+const headline = (post.title || 'Пост фонда').slice(0, 110);
+
+// Article (Google: Требуются headline, image, datePublished, publisher)
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline,
+  description: (post.description || post.title || '').slice(0, 300),
+  image: [abs(images[0] || videos[0]?.image || '/images/fund-cover.jpg')],
+  datePublished: isoDate,
+  dateModified: isoDate,
+  inLanguage: 'ru',
+  author: { '@id': `${BASE}#ngo` },
+  publisher: { '@id': `${BASE}#ngo` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  articleBody: (post.text || '').slice(0, 5000),
+  ...(likes > 0 || comments > 0
+    ? {
+        interactionStatistic: [
+          ...(likes > 0
+            ? [{ '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: likes }]
+            : []),
+          ...(comments > 0
+            ? [{ '@type': 'InteractionCounter', interactionType: 'https://schema.org/CommentAction', userInteractionCount: comments }]
+            : []),
+        ],
+      }
+    : {}),
+};
+
+// VideoObject для живых видео — видео-превью в выдаче Google
+// генерик-названия VK («Видео от…», «Клип @…», имена файлов) неинформативны — берём заголовок поста
+const GENERIC_TITLE = /^(Видео от|Клип|video|MOV|lv_0|fotoplay|YouCut)/i;
+const videoName = (v) =>
+  v.title && !GENERIC_TITLE.test(v.title.trim()) && !v.title.includes('.mp4')
+    ? v.title
+    : headline;
+
+const videoSchemas = videos
+  .filter((v) => v.owner_id != null && v.id != null && !v.dead)
+  .map((v) => ({
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: videoName(v).slice(0, 110),
+    description: (post.description || post.title || 'Видео благотворительного фонда «Достижение-Дети»').slice(0, 300),
+    thumbnailUrl: [abs(v.image || '/images/fund-cover.jpg')],
+    uploadDate: isoDate,
+    ...(isoDur(v.duration) ? { duration: isoDur(v.duration) } : {}),
+    embedUrl: `https://vk.com/video_ext.php?oid=${v.owner_id}&id=${v.id}`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+    publisher: { '@id': `${BASE}#ngo` },
+  }));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: BASE },
+    { '@type': 'ListItem', position: 2, name: 'Новости фонда', item: `${BASE}news/` },
+    { '@type': 'ListItem', position: 3, name: headline },
+  ],
+};
 ---
 
 <Layout
@@ -32,6 +110,7 @@ function formatDate(d) {
   description={post.description}
   image={ogImage}
 >
+  <JsonLd slot="head" data={[articleSchema, ...videoSchemas, breadcrumbSchema]} />
   <section class="relative py-16 md:py-20 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl mx-auto">

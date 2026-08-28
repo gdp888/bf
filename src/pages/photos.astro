@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import JsonLd from '../components/JsonLd.astro';
 import albums from '../data/albums.json';
 
 // транслит для URL альбомов
@@ -28,6 +29,27 @@ const prepared = albums.map((a) => ({ ...a, slug: slugify(a.title), title: prett
 
 // og:image — обложка самого содержательного альбома
 const cover = prepared.slice().sort((a, b) => b.count - a.count)[0]?.photos?.[0]?.src || '/images/fund-cover.jpg';
+
+// ─── Schema.org: страница-коллекция альбомов ───
+const BASE = Astro.site!.href;
+const gallerySchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Фотогалерея — БФ «Достижение-Дети»',
+  url: new URL('photos/', Astro.site).href,
+  inLanguage: 'ru',
+  isPartOf: { '@id': `${BASE}#website` },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: prepared.length,
+    itemListElement: prepared.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: a.title,
+      url: new URL(`photos/${a.slug}/`, Astro.site).href,
+    })),
+  },
+};
 ---
 
 <Layout
@@ -35,6 +57,7 @@ const cover = prepared.slice().sort((a, b) => b.count - a.count)[0]?.photos?.[0]
   description={`Фотографии фонда: наши подопечные, праздники, мероприятия и отчеты по сборам. ${totalPhotos} ${plural(totalPhotos)} помощи детям с особенностями здоровья.`}
   image={cover}
 >
+  <JsonLd slot="head" data={[gallerySchema]} />
   <section class="relative py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
     <div class="container mx-auto px-4 relative z-10 text-center">
       <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium mb-4">📸 {totalPhotos} {plural(totalPhotos)}</span>

@@ -1,0 +1,16 @@
+---
+// Рендер JSON-LD блоков Schema.org.
+// Использование: <JsonLd slot="head" data={[obj1, obj2]} />
+// slot="head" кладёт разметку в <head> Layout'а (named slot — только прямой потомок Layout).
+interface Props {
+  data: object[];
+}
+
+const { data } = Astro.props;
+
+// защита от breakout: "</script>" внутри текста постов не должен закрывать тег
+const safe = (obj: object) =>
+  JSON.stringify(obj).replace(/<\//g, '<\\/');
+---
+
+{data.map((d) => <script type="application/ld+json" set:html={safe(d)} />)}

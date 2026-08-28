@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import JsonLd from '../components/JsonLd.astro';
 import videosData from '../data/videos.json';
 
 const { catalog, recent, stats } = videosData;
@@ -24,6 +25,62 @@ function pluralV(n) {
 
 const totalVideos = stats.in_posts_alive + stats.catalog_count;
 const cover = catalog[0]?.poster || '/images/fund-cover.jpg';
+
+// ─── Schema.org: VideoObject (полные данные каталога) + ItemList ───
+const BASE = Astro.site!.href;
+const abs = (p: string) => new URL(p, Astro.site).href;
+const pageUrl = new URL(Astro.url.pathname.replace(/([^/])$/, '$1/'), Astro.site).href;
+
+function isoDur(s) {
+  if (typeof s !== 'number' || !s || s <= 0) return undefined;
+  const m = Math.floor(s / 60);
+  const r = Math.round(s % 60);
+  return m > 0 ? `PT${m}M${r}S` : `PT${r}S`;
+}
+function isoDate(d) {
+  return (d || '').replace(' ', 'T') + (d && d.length === 16 ? ':00' : '');
+}
+
+const videoSchemas = catalog.map((v) => ({
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: v.title,
+  description: `Видео благотворительного фонда «Достижение-Дети»: ${v.title}. Реабилитация и жизнь наших подопечных.`,
+  thumbnailUrl: [abs(v.poster)],
+  uploadDate: isoDate(v.date),
+  ...(isoDur(v.duration) ? { duration: isoDur(v.duration) } : {}),
+  embedUrl: v.player,
+  contentUrl: v.player,
+  interactionStatistic: {
+    '@type': 'InteractionCounter',
+    interactionType: 'https://schema.org/WatchAction',
+    userInteractionCount: v.views || 0,
+  },
+  isFamilyFriendly: true,
+  publisher: { '@id': `${BASE}#ngo` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+}));
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Видео фонда — БФ «Достижение-Дети»',
+  numberOfItems: catalog.length + recent.length,
+  itemListElement: [
+    ...catalog.map((v, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: v.title,
+      url: pageUrl,
+    })),
+    ...recent.map((v, i) => ({
+      '@type': 'ListItem',
+      position: catalog.length + i + 1,
+      name: v.title,
+      url: new URL(`news/${v.post_slug}/`, Astro.site).href,
+    })),
+  ],
+};
 ---
 
 <Layout
@@ -31,6 +88,7 @@ const cover = catalog[0]?.poster || '/images/fund-cover.jpg';
   description={`Видео фонда: реабилитация наших подопечных, праздники, будни и отчёты. ${totalVideos} ${pluralV(totalVideos)} о работе фонда для детей с особенностями здоровья.`}
   image={cover}
 >
+  <JsonLd slot="head" data={[...videoSchemas, listSchema]} />
   <section class="relative py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
     <div class="container mx-auto px-4 relative z-10 text-center">
       <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium mb-4">🎬 {totalVideos} видео</span>

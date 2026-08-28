@@ -14,6 +14,36 @@ const {
 // канонический URL: домен из astro.config + путь со слэшем на конце
 const canonical = new URL(Astro.url.pathname.replace(/([^/])$/, '$1/'), Astro.site).href;
 const ogImage = image.startsWith('http') ? image : new URL(image, Astro.site).href;
+
+const BASE = Astro.site!.href;
+const abs = (p: string) => new URL(p, Astro.site).href;
+
+// ─── Schema.org: организация (граф с @id — на неё ссылаются статьи и видео) ───
+const ngoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  '@id': `${BASE}#ngo`,
+  name: 'БФ «Достижение-Дети»',
+  alternateName: 'Благотворительный фонд «Достижение-Дети»',
+  url: BASE,
+  logo: abs('/images/fund-avatar.jpg'),
+  image: abs('/images/fund-cover.jpg'),
+  description:
+    'Благотворительный фонд помощи детям с ДЦП и особенностями здоровья: оплачиваем курсы реабилитации, проводим праздники и летний отдых, поддерживаем семьи подопечных.',
+  sameAs: ['https://vk.ru/dostigenie_deti'],
+  identifier: {
+    '@type': 'PropertyValue',
+    name: 'ИНН',
+    value: '6382076793',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    url: 'https://vk.ru/dostigenie_deti',
+    availableLanguage: ['ru'],
+  },
+};
+const ngoLd = JSON.stringify(ngoSchema).replace(/<\//g, '<\\/');
 ---
 
 <!doctype html>
@@ -37,6 +67,10 @@ const ogImage = image.startsWith('http') ? image : new URL(image, Astro.site).hr
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <!-- Schema.org: организация фонда — на всех страницах -->
+    <script type="application/ld+json" set:html={ngoLd} />
+    <!-- сюда страницы кладут свою разметку: <JsonLd slot="head" .../> -->
+    <slot name="head" />
     <title>{title}</title>
   </head>
   <body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-amber-50 antialiased">

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import JsonLd from '../components/JsonLd.astro';
 import fundData from '../data/fund.json';
 
 const { fund_info, stories, stats } = fundData;
@@ -17,9 +18,21 @@ const CLOSED_PER_PAGE = 8;
 const closedFirstPage = closedStories.slice(0, CLOSED_PER_PAGE);
 const totalPages = Math.ceil(closedStories.length / CLOSED_PER_PAGE);
 const olderPages = totalPages > 1;
+
+// ─── Schema.org: сайт ───
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${Astro.site!.href}#website`,
+  name: 'БФ «Достижение-Дети»',
+  url: Astro.site!.href,
+  inLanguage: 'ru',
+  publisher: { '@id': `${Astro.site!.href}#ngo` },
+};
 ---
 
 <Layout title="БФ «Достижение-Дети» — Помощь детям с особенностями здоровья">
+  <JsonLd slot="head" data={[websiteSchema]} />
   <!-- Hero: компактный, конкретика вместо общих слов -->
   <section class="relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('/images/fund-cover.jpg')] bg-cover bg-center"></div>
