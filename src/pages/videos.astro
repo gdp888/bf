@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import videosData from '../data/videos.json';
+
+const { catalog, recent, stats } = videosData;
+
+function fmtDur(s) {
+  if (typeof s !== 'number' || !s) return '';
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return m > 0 ? `${m}:${String(r).padStart(2, '0')}` : `${r}с`;
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function pluralV(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'видео';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'видео';
+  return 'видео';
+}
+
+const totalVideos = stats.in_posts_alive + stats.catalog_count;
+const cover = catalog[0]?.poster || '/images/fund-cover.jpg';
+---
+
+<Layout
+  title={`Видео фонда — БФ «Достижение-Дети»`}
+  description={`Видео фонда: реабилитация наших подопечных, праздники, будни и отчёты. ${totalVideos} ${pluralV(totalVideos)} о работе фонда для детей с особенностями здоровья.`}
+  image={cover}
+>
+  <section class="relative py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium mb-4">🎬 {totalVideos} видео</span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white">Видео фонда</h1>
+      <p class="text-white/80 mt-3 max-w-2xl mx-auto text-sm md:text-base">
+        Реабилитация наших подопечных, праздники, поездки и будни «Достижения-Дети» —
+        живые истории, которые не расскажешь словами.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-10 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <!-- Каталог видео фонда (раздел «Видео» группы VK) -->
+      {catalog.length > 0 && (
+        <div class="mb-14">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
+            Реабилитация наших детей
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {catalog.map((v) => (
+              <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden border border-gray-100">
+                <div class="relative aspect-video bg-gray-900 vk-video" data-vk-embed={`${v.player}&autoplay=1`}>
+                  <img
+                    src={v.poster}
+                    alt={`${v.title} — видео фонда`}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    width={v.w}
+                    height={v.h}
+                  />
+                  <button
+                    type="button"
+                    class="group absolute inset-0 w-full h-full bg-black/30 hover:bg-black/40 transition flex items-center justify-center cursor-pointer"
+                    aria-label={`Смотреть видео: ${v.title}`}
+                  >
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </button>
+                  {v.duration > 0 && (
+                    <span class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded pointer-events-none">
+                      {fmtDur(v.duration)}
+                    </span>
+                  )}
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-gray-800">{v.title}</h3>
+                  <p class="text-gray-400 text-xs mt-1">
+                    {fmtDate(v.date)} · 👁 {v.views}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Последние видео из ленты -->
+      {recent.length > 0 && (
+        <div class="mb-14">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
+            Последние видео из ленты фонда
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {recent.map((v) => (
+              <a href={`/news/${v.post_slug}/`} class="group bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden border border-gray-100 flex flex-col">
+                <div class="aspect-video overflow-hidden bg-gray-100 relative">
+                  <img
+                    src={v.image}
+                    alt={`${v.title} — видео из ленты фонда`}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+                    <div class="w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <svg class="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                  {v.duration > 0 && (
+                    <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-medium px-1.5 py-0.5 rounded pointer-events-none">
+                      {fmtDur(v.duration)}
+                    </span>
+                  )}
+                </div>
+                <div class="p-3 flex-1 flex flex-col">
+                  <p class="text-sm text-gray-700 font-medium leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors">{v.title}</p>
+                  <p class="text-gray-400 text-xs mt-auto pt-2">{fmtDate(v.post_date)}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div class="mt-6 text-center">
+            <a href="/news/" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors">
+              Все посты фонда
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      )}
+
+      <div class="mt-12 bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center">
+        <p class="text-gray-600 text-sm mb-4">Хотите помочь детям из этих видео?</p>
+        <a
+          href="/help/"
+          class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-6 py-3 rounded-full font-bold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:scale-105 transition-all"
+        >
+          <span>💝</span><span>Помочь детям</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // click-to-play: плеер VK подгружается только в момент клика по обложке.
+  document.querySelectorAll('.vk-video[data-vk-embed]').forEach((box) => {
+    box.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = box.dataset.vkEmbed;
+      iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture;');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('frameborder', '0');
+      iframe.className = 'absolute inset-0 w-full h-full';
+      box.innerHTML = '';
+      box.appendChild(iframe);
+    }, { once: true });
+  });
+</script>
