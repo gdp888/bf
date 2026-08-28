@@ -1,0 +1,157 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import albums from '../../data/albums.json';
+
+function plural(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'фотография';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'фотографии';
+  return 'фотографий';
+}
+
+// транслит и заголовок: getStaticPaths хойстится в изолированный модуль,
+// поэтому всё нужное объявлено ВНУТРИ функции (как в page/[n].astro)
+export function getStaticPaths() {
+  const MAP = {
+    а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh', з: 'z',
+    и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r',
+    с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch', ш: 'sh',
+    щ: 'sch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya',
+  };
+  const slugify = (t) => t.toLowerCase().split('').map((c) => MAP[c] ?? c).join('')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'album';
+  const pretty = (t) => t.charAt(0).toUpperCase() + t.slice(1).replace(/_/g, ' ');
+  const used = new Set();
+  return albums.map((album) => {
+    let slug = slugify(album.title);
+    if (used.has(slug)) slug = `${slug}-${album.id}`;
+    used.add(slug);
+    return {
+      params: { slug },
+      props: {
+        album: { ...album, title: pretty(album.title) },
+      },
+    };
+  });
+}
+
+const { album } = Astro.props;
+const { title, photos } = album;
+const ogImage = photos[0]?.src || '/images/fund-cover.jpg';
+---
+
+<Layout
+  title={`${title} — Фотогалерея — БФ «Достижение-Дети»`}
+  description={`${title}: ${album.count} ${plural(album.count)} из фотогалереи благотворительного фонда «Достижение-Дети». Наши подопечные и жизнь фонда.`}
+  image={ogImage}
+>
+  <section class="relative py-12 md:py-14 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
+      <nav class="flex items-center gap-2 text-white/80 text-sm mb-4" aria-label="Хлебные крошки">
+        <a href="/" class="hover:text-white">Главная</a>
+        <span>/</span>
+        <a href="/photos/" class="hover:text-white">Фотогалерея</a>
+      </nav>
+      <h1 class="text-2xl md:text-3xl font-bold text-white">{title}</h1>
+      <span class="inline-block mt-3 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium">
+        📸 {album.count} {plural(album.count)}
+      </span>
+    </div>
+  </section>
+
+  <section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3 [column-fill:_balance]">
+        {photos.map((p, i) => (
+          <button
+            type="button"
+            class="mb-3 block w-full break-inside-avoid rounded-lg overflow-hidden group relative bg-gray-200 cursor-zoom-in"
+            data-lightbox-trigger
+            data-src={p.src}
+            data-alt={`${title} — фото ${i + 1}`}
+            aria-label={`Открыть фото ${i + 1} на весь экран`}
+          >
+            <img
+              src={p.src}
+              alt={`${title} — фото ${i + 1}`}
+              class="w-full h-auto group-hover:brightness-110 transition"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        ))}
+      </div>
+
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/photos/" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium">
+          <span aria-hidden="true">←</span> Все альбомы
+        </a>
+        <a
+          href="/help/"
+          class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-6 py-3 rounded-full font-bold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:scale-105 transition-all"
+        >
+          <span>💝</span><span>Помочь детям</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Лайтбокс: без зависимостей, клик/Esc закрывает, стрелки листают -->
+  <div
+    id="lb"
+    class="fixed inset-0 bg-black/90 z-[100] hidden items-center justify-center"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Просмотр фотографии"
+  >
+    <button type="button" id="lb-close" class="absolute top-4 right-4 text-white/80 hover:text-white text-4xl leading-none w-12 h-12 flex items-center justify-center" aria-label="Закрыть">×</button>
+    <button type="button" id="lb-prev" class="absolute left-2 md:left-6 text-white/80 hover:text-white text-4xl leading-none w-12 h-12 flex items-center justify-center" aria-label="Предыдущее фото">‹</button>
+    <button type="button" id="lb-next" class="absolute right-2 md:right-6 text-white/80 hover:text-white text-4xl leading-none w-12 h-12 flex items-center justify-center" aria-label="Следующее фото">›</button>
+    <img id="lb-img" src="" alt="" class="max-w-[92vw] max-h-[88vh] object-contain select-none" />
+    <span id="lb-count" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm bg-black/40 rounded-full px-3 py-1"></span>
+  </div>
+
+  <script>
+    const triggers = Array.from(document.querySelectorAll('[data-lightbox-trigger]'));
+    const lb = document.getElementById('lb')!;
+    const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+    const lbCount = document.getElementById('lb-count')!;
+    let idx = 0;
+
+    function show(i: number) {
+      idx = (i + triggers.length) % triggers.length;
+      const t = triggers[idx] as HTMLElement;
+      lbImg.src = t.dataset.src || '';
+      lbImg.alt = t.dataset.alt || '';
+      lbCount.textContent = `${idx + 1} / ${triggers.length}`;
+    }
+    function open(i: number) {
+      show(i);
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+      document.body.style.overflow = '';
+      lbImg.src = '';
+    }
+
+    triggers.forEach((t, i) =>
+      t.addEventListener('click', () => open(i))
+    );
+    document.getElementById('lb-close')!.addEventListener('click', close);
+    document.getElementById('lb-prev')!.addEventListener('click', () => show(idx - 1));
+    document.getElementById('lb-next')!.addEventListener('click', () => show(idx + 1));
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (lb.classList.contains('hidden')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(idx - 1);
+      if (e.key === 'ArrowRight') show(idx + 1);
+    });
+  </script>
+</Layout>

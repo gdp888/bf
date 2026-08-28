@@ -43,6 +43,11 @@ jobs:
           PYTHONUNBUFFERED: '1'
         run: python scripts/ci_vk_sync.py
 
+      - name: Run VK albums sync
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: python scripts/vk_albums_sync.py all
+
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"

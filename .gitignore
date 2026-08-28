@@ -72,3 +72,5 @@ htmlcov/
 *.tar.xz
 *.tar.zst
 ```
+# сырец URL альбомов (токены протухают, для сессии только)
+scripts/albums_raw.json
