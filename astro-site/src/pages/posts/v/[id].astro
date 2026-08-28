@@ -21,14 +21,14 @@ const comments = post.comments?.count ?? (typeof post.comments === 'number' ? po
 const reposts = post.reposts?.count ?? (typeof post.reposts === 'number' ? post.reposts : 0);
 const views = post.views?.count ?? (typeof post.views === 'number' ? post.views : 0);
 
-function formatDate(d: string) {
+function formatDate(d) {
   const date = new Date(d);
   return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 ---
 
 <Layout title={`Пост #${post.id} — БФ «Достижение-Дети»`}>
-  <section class="relative py-16 md:py-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 overflow-hidden">
+  <section class="relative py-16 md:py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-800 overflow-hidden">
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl mx-auto">
         <nav class="flex items-center gap-2 text-white/80 text-sm mb-6">
@@ -116,7 +116,7 @@ function formatDate(d: string) {
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Все посты
           </a>
-          <a href={`https://vk.ru/dostigenie_deti?w=wall-${post.id}`} target="_blank" class="inline-flex items-center gap-2 text-[#0077FF] hover:text-[#0066DD] text-sm font-medium">
+          <a href="https://vk.ru/dostigenie_deti" target="_blank" class="inline-flex items-center gap-2 text-[#0077FF] hover:text-[#0066DD] text-sm font-medium">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
             Оригинал в VK
           </a>

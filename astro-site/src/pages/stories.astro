@@ -3,11 +3,16 @@ import Layout from '../layouts/Layout.astro';
 import fundData from '../data/fund.json';
 
 const { stories, fund_info } = fundData;
+// кадрирование фото: классы литералами для Tailwind JIT
+const POS_CLASS = {
+  'top': 'object-top',
+  'center 30%': 'object-[position:center_30%]',
+};
 ---
 
 <Layout title="Истории детей — БФ «Достижение-Дети»">
   <!-- Hero -->
-  <section class="relative py-20 bg-gradient-to-br from-pink-500 via-red-400 to-orange-400 overflow-hidden">
+  <section class="relative py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-800 overflow-hidden">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
     
     <div class="container mx-auto px-4 relative z-10 text-center">
@@ -38,10 +43,14 @@ const { stories, fund_info } = fundData;
           {stories.map((story) => (
             <article class="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
               <div class="md:flex">
-                <div className="md:w-1/3 bg-gradient-to-br from-primary-400 to-primary-600 p-8 flex items-center justify-center">
-                  <div class="text-8xl group-hover:scale-110 transition-transform duration-300">👦</div>
+                <div class="md:w-1/3 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center overflow-hidden">
+                  {story.image ? (
+                    <img src={story.image} alt={story.name} class={`w-full h-64 md:h-full object-cover ${POS_CLASS[story.image_pos] || ''}`} loading="lazy" />
+                  ) : (
+                    <div class="text-8xl group-hover:scale-110 transition-transform duration-300 py-16">👦</div>
+                  )}
                 </div>
-                <div className="md:w-2/3 p-8 md:p-10">
+                <div class="md:w-2/3 p-8 md:p-10">
                   <div class="flex items-start justify-between mb-4">
                     <div>
                       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{story.name}</h2>
