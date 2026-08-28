@@ -5,7 +5,7 @@ import allPosts from '../data/all_posts.json';
 const perPage = 20;
 const totalPages = Math.ceil(allPosts.length / perPage);
 const page = 1;
-const posts = allPosts.slice(0, perPage);
+const posts = allPosts.map(p => ({ ...p, slug: p.slug.replace(/([a-zа-яё])([a-zа-яё0-9])/gi, '$1-$2').replace(/-{2,}/g, '-').replace(/^-|-$/g, '') })).slice((page - 1) * perPage, page * perPage);
 
 function formatDate(d) {
   return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
