@@ -5,11 +5,12 @@ CI-синхронизация постов VK -> сайт (запускаетс�
 Алгоритм:
   1. Headless Chromium (Playwright) открывает группу vk.ru/dostigenie_deti
      и скроллит ленту, собирая id постов.
-  2. Новые id (которых нет в src/data/fund.json) обходятся по прямым
+  2. Новые id (которых нет в src/data/all_posts.json) обходятся по прямым
      ссылкам: текст, дата, реакции, фото.
   3. Фото скачиваются в public/images (HD: параметр cs= поднимается
      до максимума из списка as=).
-  4. Посты дописываются в src/data/fund.json, id пересчитываются.
+  4. Посты дописываются в src/data/all_posts.json — единый источник ленты
+     /news. URL поста: /news/<дата>-<транслит-слова>/ (см. migrate_urls.py).
   5. Изменения коммитит отдельный шаг workflow.
 
 Правила отбора:
@@ -28,8 +29,11 @@ from pathlib import Path
 import requests
 from playwright.sync_api import sync_playwright
 
+# общая логика слагов/заголовков — та же, что в миграции URL (скрипты в одной папке)
+from migrate_urls import slug_words, make_title, make_description
+
 ROOT = Path(__file__).resolve().parent.parent
-FUND_JSON = ROOT / 'src' / 'data' / 'fund.json'
+ALL_POSTS_JSON = ROOT / 'src' / 'data' / 'all_posts.json'
 IMG_DIR = ROOT / 'public' / 'images'
 
 GROUP_URL = 'https://vk.ru/dostigenie_deti'
@@ -44,22 +48,6 @@ MONTHS_EN = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
              'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
 MONTHS_RU = {'янв': 1, 'фев': 2, 'мар': 3, 'апр': 4, 'мая': 5, 'июн': 6,
              'июл': 7, 'авг': 8, 'сен': 9, 'окт': 10, 'ноя': 11, 'дек': 12}
-MONTHS_RU_GEN = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля',
-                 5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа',
-                 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
-
-TRANSLIT = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
-    'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
-    'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-    'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
-    'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
-}
-
-BOLD_PATTERNS = ['вместе мы сделаем мир добрее', 'сбор закрыт',
-                 'напоминаем', 'примите участие', 'обращаемся к каждому',
-                 'мы просим вас о помощи', 'давайте усилимся']
-
 MSK = timezone(timedelta(hours=3))
 
 
@@ -68,7 +56,7 @@ def log(msg):
 
 
 def parse_vk_date(rel: str) -> str:
-    """'17 Aug at 10:40 am' / 'сегодня в 12:00' / 'yesterday at ...' -> '17 августа 2026'."""
+    """'17 Aug at 10:40 am' / 'сегодня в 12:00' / 'yesterday at ...' -> 'YYYY-MM-DD 12:00'."""
     rel = (rel or '').strip().lower()
     now = datetime.now(MSK)
     m = re.search(r'(\d{1,2})\s+([a-zа-я]{3})', rel)
@@ -79,14 +67,11 @@ def parse_vk_date(rel: str) -> str:
             year = now.year
             if month > now.month + 1:
                 year -= 1
-            return f'{day} {MONTHS_RU_GEN[month]} {year}'
+            return f'{year:04d}-{month:02d}-{day:02d} 12:00'
     if any(w in rel for w in ('yesterday', 'вчера')):
         d = now - timedelta(days=1)
-        return f'{d.day} {MONTHS_RU_GEN[d.month]} {d.year}'
-    if any(w in rel for w in ('today', 'сегодня', 'minute', 'hour',
-                              'минут', 'час')):
-        return f'{now.day} {MONTHS_RU_GEN[now.month]} {now.year}'
-    return f'{now.day} {MONTHS_RU_GEN[now.month]} {now.year}'
+        return f'{d.year:04d}-{d.month:02d}-{d.day:02d} 12:00'
+    return f'{now.year:04d}-{now.month:02d}-{now.day:02d} 12:00'
 
 
 def clean_text(t: str) -> str:
@@ -127,13 +112,13 @@ def make_title(txt: str) -> str:
     return 'Новость фонда'
 
 
-def make_slug(title: str, vk_id: str, existing: set) -> str:
-    s = title.lower()
-    s = ''.join(TRANSLIT.get(ch, ch) for ch in s)
-    s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
-    s = re.sub(r'-{2,}', '-', s)[:60].rstrip('-') or 'post'
+def make_slug(text: str, iso_date: str, vk_id: str, existing: set) -> str:
+    """ЧПУ /news/<дата>-<слова>/: та же логика, что в migrate_urls.py."""
+    words = slug_words(text)
+    date = iso_date[:10]
+    s = f'{date}-{words}' if words else f'{date}-post-{vk_id}'
     if s in existing:
-        s = f'{s}-vk{vk_id}'
+        s = f'{s}-{vk_id}'
     return s
 
 
@@ -157,26 +142,6 @@ def fingerprint(txt: str) -> str:
     видеопост с ней и без неё даст разные отпечатки."""
     txt = re.sub(r'^\s*\d+:\d{2}\s*', '', (txt or ''))
     return re.sub(r'[^a-zа-я0-9]+', '', txt.lower())[:100]
-
-
-def apply_bold(txt: str) -> str:
-    out = []
-    for ln in txt.split('\n'):
-        s = ln.strip()
-        if s and len(s) < 120 and not s.startswith('**') and \
-                any(p in s.lower() for p in BOLD_PATTERNS):
-            out.append(f'**{s}**')
-        else:
-            out.append(ln)
-    return '\n'.join(out)
-
-
-def short_content(t: str, limit: int = 220) -> str:
-    first = t.split('\n\n')[0] if '\n\n' in t else t
-    s = re.sub(r'\s+', ' ', first).strip()
-    if len(s) > limit:
-        s = s[:limit].rsplit(' ', 1)[0] + '…'
-    return s
 
 
 def upgrade_url(url: str) -> str:
@@ -275,10 +240,10 @@ def feed_reacts(feed: dict, pid: str) -> str:
 
 
 def main() -> int:
-    data = json.loads(FUND_JSON.read_text(encoding='utf-8'))
-    known = {str(p.get('vk_id')) for p in data['posts']}
-    known_slugs = {p['slug'] for p in data['posts']}
-    seen_fps = {fingerprint(p.get('full_content', '')) for p in data['posts']}
+    data = json.loads(ALL_POSTS_JSON.read_text(encoding='utf-8'))
+    known = {str(p.get('id')) for p in data}
+    known_slugs = {p['slug'] for p in data}
+    seen_fps = {fingerprint(p.get('text', '')) for p in data}
     seen_fps.discard('')
     log(f'known posts: {len(known)}')
 
@@ -382,32 +347,31 @@ def main() -> int:
             seen_fps.add(fp)
             media = fetch_images(pid, det.get('imgs', []))
             post_type, has_video, dur, txt = detect_type(txt, len(media))
-            date = parse_vk_date(det.get('date', ''))
+            iso_date = parse_vk_date(det.get('date', ''))
 
-            title = make_title(txt)
-            slug = make_slug(title, pid, known_slugs)
+            title = make_title(txt, 'Новость фонда')
+            slug = make_slug(txt, iso_date, pid, known_slugs)
             known_slugs.add(slug)
-            txt = apply_bold(txt)
+            desc = make_description(
+                txt, 'Новость благотворительного фонда «Достижение-Дети».')
 
             created.append({
-                'id': 0,
-                'vk_id': pid,
+                'id': int(pid),
+                'date': iso_date,
+                'text': txt,
+                'images': [m['url'] for m in media if m.get('type') == 'image'],
+                'videos': ([{'title': title, 'duration': dur or None,
+                             'image': '',
+                             'vk_url': f'https://vk.ru/wall-{GROUP_ID}_{pid}'}]
+                           if has_video else []),
+                'links': [],
+                'likes': int(feed_reacts(feed, pid) or 0),
+                'comments': 0,
+                'reposts': 0,
+                'views': 0,
                 'slug': slug,
-                'date': date,
-                'type': post_type,
                 'title': title,
-                'content': short_content(txt),
-                'full_content': txt,
-                'reactions': int(feed_reacts(feed, pid) or 0),
-                'comments_count': 0,
-                'shares': 0,
-                'has_video': has_video,
-                'video_duration': dur or None,
-                'tags': [],
-                'author': 'БФ «Достижение-Дети»',
-                'commenters': [],
-                'media': media,
-                'vk_url': f'https://vk.ru/wall-{GROUP_ID}_{pid}',
+                'description': desc,
             })
             log(f'  OK: [{post_type}] {title[:60]} imgs={len(media)}')
 
@@ -417,21 +381,17 @@ def main() -> int:
         log('NO_NEW_POSTS (все новые id отсеяны по правилам)')
         return 0
 
-    # --- 4. мерж в fund.json ---
-    all_posts = data['posts'] + created
-    all_posts.sort(key=lambda p: int(p['vk_id']), reverse=True)
-    for i, p in enumerate(all_posts, 1):
-        p['id'] = i
-    data['posts'] = all_posts
-    data['parsed_at'] = datetime.now(MSK).strftime('%Y-%m-%d')
-    FUND_JSON.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + '\n',
+    # --- 4. мерж в all_posts.json (единый источник ленты /news) ---
+    all_posts = data + created
+    all_posts.sort(key=lambda p: ((p.get('date') or ''), int(p['id'])), reverse=True)
+    ALL_POSTS_JSON.write_text(
+        json.dumps(all_posts, ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8')
     log(f'MERGED: +{len(created)} posts, total {len(all_posts)}')
     # отчёт в worklog/autosync.log — уйдёт в тот же автокоммит (история работы робота)
     stamp = datetime.now(MSK).strftime('%Y-%m-%d %H:%M МСК')
-    rep = [f'{stamp} | +{len(created)} пост(ов) | id: {", ".join(p["vk_id"] for p in created)}']
-    rep += [f'    {p["vk_id"]}: {p["title"][:80]}' for p in created]
+    rep = [f'{stamp} | +{len(created)} пост(ов) | id: {", ".join(str(p["id"]) for p in created)}']
+    rep += [f'    {p["id"]}: {p["title"][:80]}' for p in created]
     with open(ROOT / 'worklog' / 'autosync.log', 'a', encoding='utf-8') as f:
         f.write('\n'.join(rep) + '\n')
     return 0

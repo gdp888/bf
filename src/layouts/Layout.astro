@@ -2,9 +2,18 @@
 interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = 'БФ «Достижение-Дети» — Благотворительный фонд помощи детям с особенностями здоровья' } = Astro.props;
+const {
+  title,
+  description = 'БФ «Достижение-Дети» — Благотворительный фонд помощи детям с особенностями здоровья',
+  image = '/images/fund-cover.jpg',
+} = Astro.props;
+
+// канонический URL: домен из astro.config + путь со слэшем на конце
+const canonical = new URL(Astro.url.pathname.replace(/([^/])$/, '$1/'), Astro.site).href;
+const ogImage = image.startsWith('http') ? image : new URL(image, Astro.site).href;
 ---
 
 <!doctype html>
@@ -14,18 +23,17 @@ const { title, description = 'БФ «Достижение-Дети» — Бла�
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/jpeg" href="/images/fund-avatar.jpg" />
+    <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="https://dostigenie-deti.ru/images/fund-cover.jpg" />
-    <meta property="og:image:width" content="1822" />
-    <meta property="og:image:height" content="728" />
-    <meta property="og:url" content="https://dostigenie-deti.ru/" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="ru_RU" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://dostigenie-deti.ru/images/fund-cover.jpg" />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -50,9 +58,9 @@ const { title, description = 'БФ «Достижение-Дети» — Бла�
         
         <div class="flex items-center gap-6">
           <a href="/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Главная</a>
-          <a href="/stories" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Истории детей</a>
-          <a href="/news" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Лента новостей</a>
-          <a href="/help" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Помочь</a>
+          <a href="/stories/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Истории детей</a>
+          <a href="/news/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Лента новостей</a>
+          <a href="/help/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">Помочь</a>
         </div>
       </nav>
     </header>
@@ -84,10 +92,9 @@ const { title, description = 'БФ «Достижение-Дети» — Бла�
             <h4 class="font-semibold text-white mb-4">Навигация</h4>
             <ul class="space-y-2 text-sm">
               <li><a href="/" class="hover:text-primary-400 transition-colors">Главная</a></li>
-              <li><a href="/stories" class="hover:text-primary-400 transition-colors">Истории детей</a></li>
-              <li><a href="/help" class="hover:text-primary-400 transition-colors">Как помочь</a></li>
-              <li><a href="/news" class="hover:text-primary-400 transition-colors">Лента новостей</a></li>
-              <li><a href="/posts" class="hover:text-primary-400 transition-colors">Все посты</a></li>
+              <li><a href="/stories/" class="hover:text-primary-400 transition-colors">Истории детей</a></li>
+              <li><a href="/help/" class="hover:text-primary-400 transition-colors">Как помочь</a></li>
+              <li><a href="/news/" class="hover:text-primary-400 transition-colors">Новости фонда</a></li>
             </ul>
           </div>
           

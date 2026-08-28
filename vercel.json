@@ -1,1 +1,8 @@
-{"buildCommand": "npx astro build", "outputDirectory": "dist", "installCommand": "npm install --legacy-peer-deps", "framework": null}
+{
+  "buildCommand": "npx astro build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": null,
+  "trailingSlash": true,
+  "cleanUrls": false
+}

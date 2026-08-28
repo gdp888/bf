@@ -178,3 +178,28 @@ Stage Summary:
 - Весь инструментарий и данные зарезервированы в GitHub (worklog/), восстановление с нуля проверено diff-ом
 - Расписание автосинка — 4 слота/день; пропуски GitHub-крона больше не означают потерю дня
 - Живое доказательство: прогон 27.08 успешно спарсил ВК с раннера
+
+---
+Task ID: 10
+Agent: Super Z (main)
+Task: Качественные ЧПУ для всех постов ленты, принцип «одна страница — один URL»
+
+Work Log:
+- Ресёрч: dist в репо устарел (20 постов при 599 в src); слаги в all_posts.json склеены без дефисов (382 шт.), 34 поста-заглушки post-N; контент жил по 3 роутам (корень /, /posts/, /posts/v/) — дубли для SEO
+- Обнаружено: домен dostigenie-deti.ru не существует в DNS (NXDOMAIN), а был прописан в astro.config site и всех og:url/og:image; /news и /news/ оба отдавали 200; sitemap и robots отсутствовали
+- Обнаружен архитектурный баг: автосинк ci_vk_sync.py писал новые посты в fund.json, а лента /news читает all_posts.json — новые посты не попадали на сайт
+- scripts/migrate_urls.py: новые слаги /news/<дата>-<транслит до 6 слов>/ (стоп-слова отфильтрованы, коллизии через суффикс -id, текстлес -> video-N/foto-N/post-N); каждому посту добавлены title (без эмодзи, до 70 симв, чистка хвостовых тире) и description (160 симв)
+- Роуты: src/pages/[slug].astro -> src/pages/news/[slug].astro (breadcrumbs, <time>, og:image из первого фото); снесены src/pages/posts/[slug].astro, posts/index.astro, posts/v/[id].astro; footer-ссылка /posts убрана
+- Ссылки: все внутренние ведут на /news/<slug>/ со слэшем; «Лента новостей» переименована в «Новости фонда» везде; stories.post_slug перемаплены через vk_id (4/4 ок); из fund.json удалён мёртвый массив posts (20 дублей)
+- SEO: @astrojs/sitemap@3.2.1 (3.7.3 требует Astro 5), sitemap-index.xml + sitemap-0.xml (632 URL, все со слэшем), public/robots.txt, canonical + og:url на каждой странице (dynamic через Astro.site), vercel.json trailingSlash:true
+- ci_vk_sync.py: переписан на all_posts.json (единый источник), parse_vk_date -> ISO, make_slug -> новый формат (импортирует slug_words из migrate_urls), удалены apply_bold/short_content/BOLD_PATTERNS/TRANSLIT (мёртвый код)
+- dist/ удалён из репо (устаревший мусор), .gitignore уже содержал dist/
+- Сборка: 632 страницы за 2.5с; проверены canonical/title/og на всех типах страниц, ссылка без слэша в sitemap: 0
+- Коммит ea675ab (101 файл, +22713/-2209)
+
+Stage Summary:
+- Коммит ea675ab готов ЛОКАЛЬНО, НЕ запушен: в окружении нет GitHub-кредов (gh CLI нет, credential helper пуст, GW_TOKEN из прошлых сессий отсутствует). Нужен PAT от пользователя ИЛИ пуш вручную
+- Бэкап: /home/z/my-project/download/bf-chpu-migration.bundle (git bundle — применяется git fetch + merge)
+- СТАРЫЕ URL (/, /posts/*, /posts/v/*, слаги без дефисов) умирают без 301 — осознанно: сайт не в индексе Google, пользователями не расшарен (решение владельца)
+- КРИТИЧЕСКИЙ ДОЛГ: 478 постов из 599 используют удалённые VK CDN-картинки с подписанными токенами (1637 фото + 282 видео-превью) — протухнут; нужна локализация в public/images (как делали для 19 постов ранее)
+- При смене домена: поменять site в astro.config.mjs + Sitemap в robots.txt + перегенерация
