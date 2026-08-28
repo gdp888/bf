@@ -44,7 +44,7 @@ function hasContent(post) {
           const likes = post.likes?.count ?? (typeof post.likes === 'number' ? post.likes : 0);
           const comments = post.comments?.count ?? (typeof post.comments === 'number' ? post.comments : 0);
           return (
-            <a href={`/posts/v/${post.id}`} class="block bg-white rounded-2xl shadow hover:shadow-lg transition-all hover:-translate-y-0.5 overflow-hidden border border-gray-100">
+            <a href={`/${post.slug}`} class="block bg-white rounded-2xl shadow hover:shadow-lg transition-all hover:-translate-y-0.5 overflow-hidden border border-gray-100">
               <div class="flex gap-4 p-4">
                 {previewImg && (
                   <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
