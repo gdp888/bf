@@ -73,9 +73,12 @@ function formatDate(d) {
           <div class="mb-8 space-y-4">
             {videos.map((v) => (
               <a href={v.vk_url || `https://vk.ru/dostigenie_deti`} target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition group">
-                {v.image && (
-                  <div class="relative aspect-video">
+                <div class="relative aspect-video">
+                  {v.image ? (
                     <img src={v.image} alt={v.title} class="w-full h-full object-cover" />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-[#0077FF]/40 via-indigo-600/30 to-purple-700/40"></div>
+                  )}
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition flex items-center justify-center">
                       <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -87,7 +90,7 @@ function formatDate(d) {
                       Смотреть в VK
                     </div>
                   </div>
-                )}
+                </div>
                 <div class="p-4 text-white flex items-center justify-between">
                   <p class="font-medium">{v.title}</p>
                   <svg class="w-5 h-5 text-white/50 group-hover:text-white transition flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>

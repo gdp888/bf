@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Playwright + Chromium
         run: |
-          pip install --quiet playwright requests
+          pip install --quiet playwright requests pillow
           python -m playwright install --with-deps chromium
 
       - name: Run VK sync

@@ -7,7 +7,8 @@ CI-синхронизация постов VK -> сайт (запускаетс�
      и скроллит ленту, собирая id постов.
   2. Новые id (которых нет в src/data/all_posts.json) обходятся по прямым
      ссылкам: текст, дата, реакции, фото.
-  3. Фото скачиваются в public/images (HD: параметр cs= поднимается
+  3. Фото скачиваются в public/images/posts и конвертируются в WebP
+     (max 1400px, q80 — как bulk-локализация; HD: параметр cs= поднимается
      до максимума из списка as=).
   4. Посты дописываются в src/data/all_posts.json — единый источник ленты
      /news. URL поста: /news/<дата>-<транслит-слова>/ (см. migrate_urls.py).
@@ -18,6 +19,7 @@ CI-синхронизация постов VK -> сайт (запускаетс�
   - за один запуск обрабатывается не более MAX_POSTS_PER_RUN новых постов;
   - существующие посты и истории детей не трогаются.
 """
+import io
 import json
 import re
 import sys
@@ -27,6 +29,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
+from PIL import Image, ImageOps
 from playwright.sync_api import sync_playwright
 
 # общая логика слагов/заголовков — та же, что в миграции URL (скрипты в одной папке)
@@ -34,7 +37,11 @@ from migrate_urls import slug_words, make_title, make_description
 
 ROOT = Path(__file__).resolve().parent.parent
 ALL_POSTS_JSON = ROOT / 'src' / 'data' / 'all_posts.json'
-IMG_DIR = ROOT / 'public' / 'images'
+IMG_DIR = ROOT / 'public' / 'images' / 'posts'
+
+# параметры те же, что в bulk-локализации (scripts/localize_images.js снаружи репо)
+WEBP_MAX_DIM = 1400
+WEBP_QUALITY = 80
 
 GROUP_URL = 'https://vk.ru/dostigenie_deti'
 GROUP_ID = '223846998'
@@ -211,24 +218,44 @@ DETAIL_JS_TEMPLATE = """
 """.replace('%GID%', GROUP_ID)
 
 
+def to_webp(content: bytes):
+    """JPEG/PNG -> WebP (max 1400px, q80). Анимированные GIF не трогаем -> (bytes, ext)."""
+    im = Image.open(io.BytesIO(content))
+    if getattr(im, 'is_animated', False):
+        return content, '.gif'
+    im = ImageOps.exif_transpose(im)
+    w, h = im.size
+    scale = WEBP_MAX_DIM / max(w, h)
+    if scale < 1:
+        im = im.resize((max(1, round(w * scale)), max(1, round(h * scale))),
+                       Image.LANCZOS)
+    if im.mode not in ('RGB', 'L'):
+        im = im.convert('RGBA')
+    buf = io.BytesIO()
+    im.save(buf, 'WEBP', quality=WEBP_QUALITY, method=4)
+    return buf.getvalue(), '.webp'
+
+
 def fetch_images(vk_id: str, urls: list) -> list:
     media = []
     headers = {'User-Agent': UA, 'Referer': 'https://vk.ru/'}
+    IMG_DIR.mkdir(parents=True, exist_ok=True)
     for i, src in enumerate(urls, 1):
-        ext = '.png' if '.png' in src.split('?')[0] else '.jpg'
-        fname = f'post-{vk_id}-{i:02d}{ext}'
-        fpath = IMG_DIR / fname
+        fname = f'post-{vk_id}-{i:02d}'
         try:
             r = requests.get(upgrade_url(src), headers=headers, timeout=30)
             if r.ok and len(r.content) > 3000:
-                fpath.write_bytes(r.content)
+                content, ext = to_webp(r.content)
+                fname += ext
+                fpath = IMG_DIR / fname
+                fpath.write_bytes(content)
                 media.append({
                     'type': 'image',
-                    'url': f'/images/{fname}',
+                    'url': f'/images/posts/{fname}',
                     'alt': '',
                     'caption': '',
                 })
-                log(f'    img ok: {fname} ({len(r.content) // 1024} KB)')
+                log(f'    img ok: {fname} ({len(content) // 1024} KB)')
         except Exception as e:
             log(f'    img fail: {e}')
     return media
