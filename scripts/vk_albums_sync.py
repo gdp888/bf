@@ -16,6 +16,7 @@
 """
 import io
 import json
+import os
 import re
 import sys
 import time
@@ -75,6 +76,71 @@ def to_webp(content: bytes):
 
 
 # ---------------------------------------------------------------- фаза 1: разбор
+
+def api_parse_albums():
+    """Альбомы через VK API (env VK_TOKEN): быстрее и надёжнее скрейпинга,
+    сразу даёт описания альбомов, даты и подписи фото."""
+    token = os.environ.get('VK_TOKEN', '')
+    base = 'https://api.vk.com/method/'
+
+    def call(method, **params):
+        params.update({'owner_id': f'-{GROUP_ID}', 'v': '5.199',
+                       'access_token': token})
+        r = requests.get(base + method, params=params, timeout=30).json()
+        if 'error' in r:
+            raise RuntimeError(f"VK API {method}: {r['error']}")
+        return r['response']
+
+    resp = call('photos.getAlbums', need_system=1, need_covers=1,
+                photo_sizes=1)
+    albums = []
+    for a in resp.get('items', []):
+        if a['id'] in (0, -6, -7, -15, -23):   # системные: аватар/обложка/обои
+            continue
+        # эмодзи из названий вычищаем: на сайте заголовки аккуратные
+        # (как при Playwright-разборе мобильной версии)
+        title = re.sub(r'[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D]',
+                       '', a.get('title') or '').strip()
+        albums.append({
+            'id': str(a['id']),
+            'title': title or 'Альбом',
+            'count': a.get('size', 0),
+            'description': a.get('description', ''),
+            'photos': [],
+        })
+    log(f'API albums: {len(albums)}')
+
+    for alb in albums:
+        items, offset = [], 0
+        while True:
+            resp = call('photos.get', album_id=int(alb['id']),
+                        photo_sizes=1, rev=0, count=100, offset=offset)
+            got = resp.get('items', [])
+            items.extend(got)
+            if len(got) < 100:
+                break
+            offset += 100
+            time.sleep(0.35)
+        photos = []
+        for ph in items:
+            sizes = ph.get('sizes') or []
+            best = max(sizes, key=lambda s: s.get('width', 0) or 0) \
+                if sizes else {}
+            photos.append({
+                'id': str(ph['id']),
+                'src': best.get('url', ''),
+                'date': ph.get('date'),
+                'text': ph.get('text', ''),
+            })
+        alb['photos'] = photos
+        log(f"  [{alb['title']}] photos: {len(photos)} (vk said {alb['count']})")
+
+    RAW_JSON.write_text(json.dumps(albums, ensure_ascii=False, indent=1),
+                        encoding='utf-8')
+    total = sum(len(a['photos']) for a in albums)
+    log(f'API PARSE DONE: {len(albums)} albums, {total} photos -> {RAW_JSON}')
+    return albums
+
 
 def parse_albums():
     albums = []
@@ -247,21 +313,29 @@ def build_json(albums):
             continue
         prev = rich.get(alb['id'], {})
         prev_photos = {str(p.get('id')): p for p in prev.get('photos', [])}
+        # названия существующих альбомов не меняем: слаг страницы строится
+        # от названия, смена названия = смена URL (плохо для SEO)
+        title = prev.get('title') or alb['title']
         photos = []
         for p in alb['photos']:
             webp = IMG_DIR / f'a{alb["id"]}-{p["id"]}.webp'
             if webp.exists():
                 item = {'id': p['id'],
                         'src': f'/images/albums/{webp.name}'}
-                # переносим дату/подпись, если были
+                # свежие данные из API или накопленные ранее
                 for k in ('date', 'text'):
-                    if prev_photos.get(p['id'], {}).get(k):
+                    if p.get(k):
+                        item[k] = p[k]
+                    elif prev_photos.get(p['id'], {}).get(k):
                         item[k] = prev_photos[p['id']][k]
                 photos.append(item)
         if photos:
-            entry = {'id': alb['id'], 'title': alb['title'],
+            entry = {'id': alb['id'], 'title': title,
                      'count': len(photos), 'photos': photos}
-            if prev.get('description'):
+            # описание: свежее из API или накопленное ранее
+            if alb.get('description'):
+                entry['description'] = alb['description']
+            elif prev.get('description'):
                 entry['description'] = prev['description']
             out.append(entry)
     ALBUMS_JSON.write_text(json.dumps(out, ensure_ascii=False, indent=1),
@@ -271,8 +345,17 @@ def build_json(albums):
 
 
 def main():
+    # API-путь надёжнее: без браузера, с описаниями/датами/подписями
+    use_api = bool(os.environ.get('VK_TOKEN'))
     if PHASE in ('all', 'parse'):
-        albums = parse_albums()
+        albums = None
+        if use_api:
+            try:
+                albums = api_parse_albums()
+            except Exception as e:
+                log(f'API_PARSE_FAIL: {e} — переключаюсь на Playwright')
+        if albums is None:
+            albums = parse_albums()
     else:
         albums = json.loads(RAW_JSON.read_text(encoding='utf-8'))
     if PHASE in ('all', 'download'):

@@ -21,6 +21,7 @@ CI-синхронизация постов VK -> сайт (запускаетс�
 """
 import io
 import json
+import os
 import re
 import sys
 import time
@@ -107,17 +108,8 @@ def strip_duration(t: str):
     return t, ''
 
 
-def make_title(txt: str) -> str:
-    emoji = re.compile(r'[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F#]')
-    for line in txt.split('\n'):
-        s = emoji.sub('', line).strip().strip('•-— ')
-        s = re.sub(r'\s+', ' ', s)
-        if len(s) >= 12:
-            if len(s) > 70:
-                s = s[:70].rsplit(' ', 1)[0] + '…'
-            return s
-    return 'Новость фонда'
-
+# NB: make_title/make_description/slug_words — из migrate_urls.py
+# (локальный дубль make_title удалён: затенял импорт и валил вызовы с fallback)
 
 def make_slug(text: str, iso_date: str, vk_id: str, existing: set) -> str:
     """ЧПУ /news/<дата>-<слова>/: та же логика, что в migrate_urls.py."""
@@ -275,6 +267,161 @@ def feed_reacts(feed: dict, pid: str) -> str:
     return item.get('reacts', '') or ''
 
 
+# ------------------------------------------------------------- API-путь (VK_TOKEN)
+
+def api_best_photo_url(photo: dict) -> str:
+    """Максимальный размер из photo.sizes."""
+    sizes = photo.get('sizes') or []
+    if not sizes:
+        return ''
+    best = max(sizes, key=lambda s: s.get('width', 0) or 0)
+    return best.get('url', '')
+
+
+def api_best_image_url(images: list) -> str:
+    """Максимальный превью-размер из video.image / video.first_frame."""
+    if not images:
+        return ''
+    best = max(images, key=lambda s: s.get('width', 0) or 0)
+    return best.get('url', '')
+
+
+def api_download(url: str, fname_base: str) -> str:
+    """Скачать и конвертировать в WebP -> относительный путь или ''."""
+    headers = {'User-Agent': UA, 'Referer': 'https://vk.ru/'}
+    try:
+        r = requests.get(url, headers=headers, timeout=60)
+        if not (r.ok and len(r.content) > 3000):
+            log(f'    img bad response {r.status_code}')
+            return ''
+        content, ext = to_webp(r.content)
+        fname = fname_base + ext
+        (IMG_DIR / fname).write_bytes(content)
+        log(f'    img ok: {fname} ({len(content) // 1024} KB)')
+        return f'/images/posts/{fname}'
+    except Exception as e:
+        log(f'    img fail: {e}')
+        return ''
+
+
+def api_sync(data: list, known: set, known_slugs: set, seen_fps: set) -> list:
+    """Синк через VK API (токен сообщества, env VK_TOKEN).
+
+    Надёжнее Playwright-скрейпинга: точные даты, счётчики реакций,
+    HD-фото и все видео-аттачи напрямую из wall.get.
+    Возвращает список новых постов в формате all_posts.json.
+    """
+    token = os.environ.get('VK_TOKEN', '')
+    api = 'https://api.vk.com/method/wall.get'
+    items, offset = [], 0
+    while True:
+        r = requests.get(api, params={
+            'owner_id': f'-{GROUP_ID}', 'count': 100, 'offset': offset,
+            'v': '5.199', 'access_token': token}, timeout=30).json()
+        if 'error' in r:
+            raise RuntimeError(f"VK API error: {r['error']}")
+        got = r['response']['items']
+        items.extend(got)
+        if len(got) < 100 or len(items) >= r['response']['count']:
+            break
+        offset += 100
+        time.sleep(0.4)
+    log(f'API: получили {len(items)} постов со стены')
+
+    new_items = [it for it in items if str(it['id']) not in known]
+    new_items.sort(key=lambda x: x['date'], reverse=True)
+    new_items = new_items[:MAX_POSTS_PER_RUN]
+    log(f'API: новых постов-кандидатов: {len(new_items)}')
+    if not new_items:
+        return []
+
+    created = []
+    for it in new_items:
+        pid = str(it['id'])
+        txt = clean_text(it.get('text', ''))
+        if len(txt) < MIN_TEXT_LEN:
+            log(f'  {pid}: skip, текст короткий ({len(txt)})')
+            continue
+        fp = fingerprint(txt)
+        if fp and fp in seen_fps:
+            log(f'  {pid}: skip, дубликат')
+            continue
+        seen_fps.add(fp)
+
+        atts = it.get('attachments', [])
+        # посты-репосты: текст берём из вложенной записи, если свой пуст
+        if not txt and it.get('copy_history'):
+            for ch in it['copy_history']:
+                ch_txt = clean_text(ch.get('text', ''))
+                if len(ch_txt) >= MIN_TEXT_LEN:
+                    txt = ch_txt
+                    atts = ch.get('attachments', [])
+                    break
+        if len(txt) < MIN_TEXT_LEN:
+            log(f'  {pid}: skip, текст пуст')
+            continue
+
+        # фото
+        images = []
+        for i, a in enumerate([a for a in atts if a['type'] == 'photo'], 1):
+            url = api_best_photo_url(a['photo'])
+            if url:
+                rel = api_download(url, f'post-{pid}-{i:02d}')
+                if rel:
+                    images.append(rel)
+
+        # видео (ID + превью)
+        videos = []
+        for i, a in enumerate([a for a in atts if a['type'] == 'video'], 1):
+            v = a['video']
+            prev = api_best_image_url(v.get('image') or v.get('first_frame') or [])
+            rel_prev = api_download(prev, f'video-{pid}-{i:02d}') if prev else ''
+            # дефолтный англ. заголовок VK нормализуем как в остальных постах
+            vtitle = v.get('title') or ''
+            if vtitle.startswith('Video by'):
+                vtitle = 'Видео от' + vtitle[len('Video by'):]
+            videos.append({
+                'title': vtitle or 'Видео от БФ «Достижение-Дети»',
+                'duration': v.get('duration'),
+                'image': rel_prev,
+                'owner_id': v.get('owner_id'),
+                'id': v.get('id'),
+                'vk_url': f'https://vk.com/wall-{GROUP_ID}_{pid}',
+            })
+
+        # ссылки
+        links = [{'url': a['link'].get('url'),
+                  'title': a['link'].get('title', '')}
+                 for a in atts if a['type'] == 'link']
+        links = [l for l in links if l['url']]
+
+        iso_date = datetime.fromtimestamp(it['date'], MSK).strftime(
+            '%Y-%m-%d %H:%M')
+        title = make_title(txt, 'Новость фонда')
+        slug = make_slug(txt, iso_date, pid, known_slugs)
+        known_slugs.add(slug)
+        desc = make_description(
+            txt, 'Новость благотворительного фонда «Достижение-Дети».')
+
+        created.append({
+            'id': it['id'],
+            'date': iso_date,
+            'text': txt,
+            'images': images,
+            'videos': videos,
+            'links': links,
+            'likes': (it.get('likes') or {}).get('count', 0),
+            'comments': (it.get('comments') or {}).get('count', 0),
+            'reposts': (it.get('reposts') or {}).get('count', 0),
+            'views': (it.get('views') or {}).get('count', 0),
+            'slug': slug,
+            'title': title,
+            'description': desc,
+        })
+        log(f'  OK: {pid} [{title[:50]}] imgs={len(images)} vids={len(videos)}')
+    return created
+
+
 def main() -> int:
     data = json.loads(ALL_POSTS_JSON.read_text(encoding='utf-8'))
     known = {str(p.get('id')) for p in data}
@@ -282,6 +429,21 @@ def main() -> int:
     seen_fps = {fingerprint(p.get('text', '')) for p in data}
     seen_fps.discard('')
     log(f'known posts: {len(known)}')
+
+    # --- API-путь: быстро и надёжно, без браузера ---
+    if os.environ.get('VK_TOKEN'):
+        log('режим: VK API (VK_TOKEN задан)')
+        try:
+            created = api_sync(data, known, known_slugs, seen_fps)
+        except Exception as e:
+            log(f'API_SYNC_FAIL: {e} — переключаюсь на Playwright')
+            created = []
+        if created or not os.environ.get('VK_FALLBACK_PW'):
+            if not created:
+                log('NO_NEW_POSTS (API)')
+                return 0
+            return finish(data, created)
+        log('API ничего не дал, пробуем Playwright-путь')
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
@@ -418,8 +580,11 @@ def main() -> int:
     if not created:
         log('NO_NEW_POSTS (все новые id отсеяны по правилам)')
         return 0
+    return finish(data, created)
 
-    # --- 4. мерж в all_posts.json (единый источник ленты /news) ---
+
+def finish(data: list, created: list) -> int:
+    """Мерж в all_posts.json + отчёт в worklog/autosync.log."""
     all_posts = data + created
     all_posts.sort(key=lambda p: ((p.get('date') or ''), int(p['id'])), reverse=True)
     ALL_POSTS_JSON.write_text(

@@ -41,11 +41,13 @@ jobs:
       - name: Run VK sync
         env:
           PYTHONUNBUFFERED: '1'
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
         run: python scripts/ci_vk_sync.py
 
       - name: Run VK albums sync
         env:
           PYTHONUNBUFFERED: '1'
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
         run: python scripts/vk_albums_sync.py all
 
       - name: Commit and Push
