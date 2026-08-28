@@ -1,0 +1,122 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import allPosts from '../../../data/all_posts.json';
+import fundData from '../../../data/fund.json';
+
+export function getStaticPaths() {
+  return allPosts.map((post) => ({
+    params: { id: String(post.id) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { fund_info } = fundData;
+
+const images = post.images || [];
+const videos = post.videos || [];
+const links = post.links || [];
+const likes = post.likes?.count ?? (typeof post.likes === 'number' ? post.likes : 0);
+const comments = post.comments?.count ?? (typeof post.comments === 'number' ? post.comments : 0);
+const reposts = post.reposts?.count ?? (typeof post.reposts === 'number' ? post.reposts : 0);
+const views = post.views?.count ?? (typeof post.views === 'number' ? post.views : 0);
+
+function formatDate(d: string) {
+  const date = new Date(d);
+  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+---
+
+<Layout title={`Пост #${post.id} — БФ «Достижение-Дети»`}>
+  <section class="relative py-16 md:py-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto">
+        <nav class="flex items-center gap-2 text-white/80 text-sm mb-6">
+          <a href="/" class="hover:text-white">Главная</a>
+          <span>/</span>
+          <a href="/posts" class="hover:text-white">Все посты</a>
+          <span>/</span>
+          <span class="text-white">#{post.id}</span>
+        </nav>
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm">📅 {formatDate(post.date)}</span>
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm">👁 {views}</span>
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm">❤️ {likes}</span>
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm">💬 {comments}</span>
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm">🔁 {reposts}</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-white leading-tight">
+          {post.text ? post.text.substring(0, 80) + (post.text.length > 80 ? '...' : '') : `Пост #${post.id}`}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <article class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        {images.length > 0 && (
+          <div class="mb-8 grid gap-4" style={`grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))`}>
+            {images.map((img) => (
+              <div class="rounded-2xl overflow-hidden shadow-lg bg-white">
+                <img src={img} alt="" class="w-full h-64 object-cover" loading="lazy" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {videos.length > 0 && (
+          <div class="mb-8 space-y-4">
+            {videos.map((v) => (
+              <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl">
+                {v.image && (
+                  <div class="relative aspect-video">
+                    <img src={v.image} alt={v.title} class="w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
+                    </div>
+                    <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">{v.duration}с</div>
+                  </div>
+                )}
+                <div class="p-4 text-white">
+                  <p class="font-medium">{v.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {links.length > 0 && (
+          <div class="mb-8 space-y-2">
+            {links.map((l) => (
+              <a href={l.url} target="_blank" class="block bg-white rounded-xl p-4 shadow hover:shadow-md transition border border-gray-100">
+                <span class="text-primary-600 font-medium">🔗 {l.title || l.url}</span>
+              </a>
+            ))}
+          </div>
+        )}
+
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10">
+          {post.text ? (
+            <div class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{post.text}</div>
+          ) : (
+            <p class="text-gray-400 italic">Пост не содержит текста</p>
+          )}
+        </div>
+
+        <div class="mt-8 flex items-center justify-between">
+          <a href="/posts" class="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 font-medium">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Все посты
+          </a>
+          <a href={`https://vk.ru/dostigenie_deti?w=wall-${post.id}`} target="_blank" class="inline-flex items-center gap-2 text-[#0077FF] hover:text-[#0066DD] text-sm font-medium">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+            Оригинал в VK
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
