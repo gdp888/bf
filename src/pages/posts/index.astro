@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import allPosts from '../../data/all_posts.json';
+import fundData from '../../data/fund.json';
+
+const { stats } = fundData;
+const posts = allPosts.slice(0, 100);
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function truncate(t, n) {
+  return t && t.length > n ? t.substring(0, n) + '...' : (t || 'Нет текста');
+}
+function hasContent(post) {
+  return (post.images && post.images.length > 0) || (post.videos && post.videos.length > 0) || (post.text && post.text.trim());
+}
+---
+
+<Layout title={`Все посты (${allPosts.length}) — БФ «Достижение-Дети»`}>
+  <section class="relative py-20 bg-gradient-to-br from-slate-800 via-gray-800 to-slate-900 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white/90 text-sm font-medium mb-6">
+        📚 Архив публикаций
+      </span>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Все посты фонда</h1>
+      <p class="text-xl text-white/80">{allPosts.length} публикаций • {stats.posts || 599} всего в VK</p>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap gap-3 mb-8">
+        <a href="/news" class="bg-white hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm border border-gray-200 transition">Новости фонда</a>
+        <a href="https://vk.ru/dostigenie_deti" target="_blank" class="bg-[#0077FF] hover:bg-[#0066DD] text-white px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-1">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+          Все в VK
+        </a>
+      </div>
+
+      <div class="grid gap-4">
+        {posts.filter(p => hasContent(p)).map((post) => {
+          const previewImg = post.images?.[0] || post.videos?.[0]?.image || null;
+          const likes = post.likes?.count ?? (typeof post.likes === 'number' ? post.likes : 0);
+          const comments = post.comments?.count ?? (typeof post.comments === 'number' ? post.comments : 0);
+          return (
+            <a href={`/posts/v/${post.id}`} class="block bg-white rounded-2xl shadow hover:shadow-lg transition-all hover:-translate-y-0.5 overflow-hidden border border-gray-100">
+              <div class="flex gap-4 p-4">
+                {previewImg && (
+                  <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                    <img src={previewImg} alt="" class="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                )}
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                    <span>📅 {formatDate(post.date)}</span>
+                    {post.videos?.length > 0 && <span class="bg-red-100 text-red-600 px-1.5 py-0.5 rounded text-xs">🎬 {post.videos.length}</span>}
+                    {post.images?.length > 0 && <span class="bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded text-xs">📷 {post.images.length}</span>}
+                  </div>
+                  <p class="text-gray-800 text-sm leading-relaxed line-clamp-2">
+                    {truncate(post.text, 150)}
+                  </p>
+                  <div class="flex items-center gap-3 mt-2 text-xs text-gray-400">
+                    <span>❤️ {likes}</span>
+                    <span>💬 {comments}</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <div class="mt-12 text-center p-8 bg-white rounded-3xl shadow">
+        <p class="text-gray-500">Показаны первые 100 постов из {allPosts.length}</p>
+        <a href="https://vk.ru/dostigenie_deti" target="_blank" class="inline-flex items-center gap-2 mt-4 text-[#0077FF] font-medium">
+          Все {allPosts.length} публикаций в VK →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
