@@ -213,7 +213,16 @@ DETAIL_JS_TEMPLATE = """
     if (seen.has(base)) return;
     seen.add(base); imgs.push(im.src);
   });
-  return {txt: txt.slice(0, 5000), date: date, imgs: imgs};
+  // Видео: ссылки вида /video-<owner>_<id> внутри поста (для встроенного плеера)
+  const vids = []; const seenV = new Set();
+  document.querySelectorAll('a[href*="/video"]').forEach(a => {
+    const m = (a.getAttribute('href') || '').match(/video(-\\d+)_(\\d+)/);
+    if (!m) return;
+    const key = m[1] + '_' + m[2];
+    if (seenV.has(key)) return;
+    seenV.add(key); vids.push({owner_id: Number(m[1]), id: Number(m[2])});
+  });
+  return {txt: txt.slice(0, 5000), date: date, imgs: imgs, vids: vids};
 })()
 """.replace('%GID%', GROUP_ID)
 
@@ -389,6 +398,8 @@ def main() -> int:
                 'images': [m['url'] for m in media if m.get('type') == 'image'],
                 'videos': ([{'title': title, 'duration': dur or None,
                              'image': '',
+                             'owner_id': (det.get('vids') or [{}])[0].get('owner_id'),
+                             'id': (det.get('vids') or [{}])[0].get('id'),
                              'vk_url': f'https://vk.ru/wall-{GROUP_ID}_{pid}'}]
                            if has_video else []),
                 'links': [],
