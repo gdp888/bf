@@ -1,0 +1,118 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import fundData from '../../data/fund.json';
+
+// Витрина завершённых сборов, страница N (первая порция живёт на главной).
+// Механика заложена заранее: когда архив закрытых сборов вырастет > 8,
+// страницы появятся автоматически, а на главной оживёт кнопка «Предыдущие сборы».
+
+const { stories } = fundData;
+const POS_CLASS = {
+  'top': 'object-top',
+  'center 30%': 'object-[position:center_30%]',
+};
+
+export function getStaticPaths() {
+  // страница 1 — это главная (/), здесь только 2..N
+  const CLOSED_PER_PAGE = 8;
+  const closed = fundData.stories.filter((s) => s.status.includes('закрыт'));
+  const totalPages = Math.ceil(closed.length / CLOSED_PER_PAGE);
+  const pages = [];
+  for (let n = 2; n <= totalPages; n++) {
+    pages.push({ params: { n: String(n) } });
+  }
+  return pages;
+}
+
+const CLOSED_PER_PAGE = 8;
+const { n } = Astro.params;
+const pageNum = Number(n);
+const closedStories = stories.filter((s) => s.status.includes('закрыт'));
+const totalPages = Math.ceil(closedStories.length / CLOSED_PER_PAGE);
+const pageStories = closedStories.slice(
+  (pageNum - 1) * CLOSED_PER_PAGE, pageNum * CLOSED_PER_PAGE
+);
+const hasOlder = pageNum < totalPages;
+---
+
+<Layout
+  title={`Завершённые сборы — страница ${pageNum} — БФ «Достижение-Дети»`}
+  description="Архив завершённых сборов БФ «Достижение-Дети»: благодаря помощи неравнодушных людей дети прошли лечение и реабилитацию."
+>
+  <!-- Компактный заголовок -->
+  <section class="relative py-12 md:py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
+
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-white/90 text-sm font-medium mb-4">
+        ✅ Сборы завершены
+      </span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        Спасибо! Эти сборы закрыты
+      </h1>
+      <p class="text-lg text-white/90 max-w-2xl mx-auto">
+        Благодаря вашей помощи дети прошли лечение и реабилитацию.
+        Мы доводим каждый сбор до конца — и отчитываемся о результатах.
+      </p>
+    </div>
+  </section>
+
+  <!-- Карточки завершённых сборов -->
+  <section class="py-14 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+        {pageStories.map((story) => (
+          <article class="bg-white rounded-3xl shadow-lg overflow-hidden border border-emerald-100 transition-all duration-300 group hover:shadow-xl flex flex-col relative">
+            <a href={`/news/${story.post_slug}/`} class="absolute inset-0 z-10" aria-label={`История: ${story.name}`}></a>
+            <div class="relative h-48 overflow-hidden">
+              {story.image ? (
+                <img
+                  src={story.image}
+                  alt={story.name}
+                  class={`w-full h-full object-cover ${POS_CLASS[story.image_pos] || ''} group-hover:scale-105 transition-transform duration-500`}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-emerald-300 to-green-400 flex items-center justify-center">
+                  <span class="text-7xl">👦</span>
+                </div>
+              )}
+              <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-emerald-500/95 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                ✅ Сбор закрыт — спасибо!
+              </span>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <h2 class="text-xl font-bold text-gray-900">{story.name}</h2>
+              <p class="text-gray-500 text-sm mt-1">{story.age} • {story.condition}</p>
+              <p class="text-gray-600 mt-3 leading-relaxed flex-1 text-sm">{story.goal}</p>
+              <p class="text-sm font-medium text-emerald-600 mt-4">
+                Как всё прошло →
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Навигация по страницам -->
+      <div class="flex items-center justify-center gap-4 mt-12">
+        <a
+          href={pageNum === 2 ? '/' : `/page/${pageNum - 1}/`}
+          class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-6 py-3 rounded-full font-medium transition-colors shadow-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          {pageNum === 2 ? 'К текущим сборам' : 'Новее'}
+        </a>
+        <span class="text-gray-400 font-medium">Страница {pageNum} из {totalPages}</span>
+        {hasOlder && (
+          <a
+            href={`/page/${pageNum + 1}/`}
+            class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-6 py-3 rounded-full font-medium transition-colors shadow-sm"
+          >
+            Старее
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+</Layout>
