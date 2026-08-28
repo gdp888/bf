@@ -68,22 +68,27 @@ function formatDate(d: string) {
         {videos.length > 0 && (
           <div class="mb-8 space-y-4">
             {videos.map((v) => (
-              <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl">
+              <a href={v.vk_url || `https://vk.ru/dostigenie_deti`} target="_blank" class="block bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition group">
                 {v.image && (
                   <div class="relative aspect-video">
                     <img src={v.image} alt={v.title} class="w-full h-full object-cover" />
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition flex items-center justify-center">
+                      <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                       </div>
                     </div>
                     <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">{v.duration}с</div>
+                    <div class="absolute top-3 right-3 bg-[#0077FF] text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 1.847-5.336h-3.316c-.715 0-1.078.375-1.346.75-.043.06-.086.12-.13.179-.579.81-1.212 1.495-1.956 1.495-.79 0-.982-.527-1.031-1.363-.063-1.083.016-2.319.016-3.435 0-.99-.185-1.392-1.155-1.556-.24-.043-.48-.073-.72-.09C11.045 1.14 9.88 1 9.295 1 7.33 1 6.073 2.02 6.82 2.255c1.148.355 1.143 1.706 1.143 3.504 0 .963-.177 2.188-.89 2.188-.776 0-1.503-.97-2.383-2.175C3.896 4.68 3.41 4.006 2.985 4.006H.643c-.346 0-.563.165-.628.44-.057.24-.015.52.108.785.86 1.78 3.967 6.54 8.554 6.54 1.876 0 2.485-.778 2.485-1.778z"/></svg>
+                      Смотреть в VK
+                    </div>
                   </div>
                 )}
-                <div class="p-4 text-white">
+                <div class="p-4 text-white flex items-center justify-between">
                   <p class="font-medium">{v.title}</p>
+                  <svg class="w-5 h-5 text-white/50 group-hover:text-white transition flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         )}
