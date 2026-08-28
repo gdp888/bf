@@ -8,157 +8,150 @@ const POS_CLASS = {
   'top': 'object-top',
   'center 30%': 'object-[position:center_30%]',
 };
-// сначала активные сборы, закрытые — в конце
-const sortedStories = [...stories].sort(
-  (a, b) => (a.status.includes('закрыт') ? 1 : 0) - (b.status.includes('закрыт') ? 1 : 0)
-);
+// на главной — только активные сборы; закрытые живут в /stories/ (соц. доказательство)
+const activeStories = stories.filter((s) => !s.status.includes('закрыт'));
+const closedCount = stories.length - activeStories.length;
 ---
 
 <Layout title="БФ «Достижение-Дети» — Помощь детям с особенностями здоровья">
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden min-h-[70vh] flex items-center">
+  <!-- Hero: компактный, конкретика вместо общих слов -->
+  <section class="relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('/images/fund-cover.jpg')] bg-cover bg-center"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-blue-950/85 to-blue-900/75"></div>
-    
-    <div class="container mx-auto px-4 py-20 md:py-28 relative z-10">
+    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/92 via-blue-950/85 to-blue-900/75"></div>
+
+    <div class="container mx-auto px-4 py-14 md:py-20 relative z-10">
       <div class="max-w-3xl mx-auto text-center">
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight">
-          {fund_info.name}
+        <span class="inline-block bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-white/90 text-sm font-medium mb-5">
+          💙 {fund_info.name}
+        </span>
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+          Помощь детям с ДЦП<br class="hidden md:block" /> и особенностями здоровья
         </h1>
-        
-        <p class="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
-          {fund_info.description}
+
+        <p class="text-base md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+          Мы оплачиваем курсы реабилитации — и дети делают первые шаги
+          и произносят первые слова. Помогите ещё одному ребёнку.
         </p>
-        
+
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a 
-            href="/help/" 
-            class="group bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold text-lg transition-all hover:shadow-xl hover:scale-105 flex items-center gap-2"
+          <a
+            href="/help/"
+            class="group bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-8 py-4 rounded-full font-bold text-lg transition-all hover:shadow-2xl hover:scale-105 flex items-center gap-2"
           >
             <span>💝</span>
-            <span>Помочь детям</span>
+            <span>Помочь сейчас</span>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </a>
-          <a 
-            href="/stories/" 
-            class="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2"
+          <a
+            href="/stories/"
+            class="text-white/90 hover:text-white border-b-2 border-white/30 hover:border-white/70 pb-0.5 font-medium transition-colors"
           >
-            <span>📖</span>
-            <span>Истории детей</span>
+            Истории детей →
           </a>
         </div>
       </div>
     </div>
-    
+
     <!-- Wave divider -->
     <div class="absolute bottom-0 left-0 right-0">
       <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
-        <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
+        <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#ffffff"/>
       </svg>
     </div>
   </section>
 
   <!-- Urgent Fundraising Cards -->
-  <section id="sbory" class="py-20 bg-white scroll-mt-16">
+  <section id="sbory" class="py-16 md:py-20 bg-white scroll-mt-16">
     <div class="container mx-auto px-4">
-      <div class="max-w-5xl mx-auto">
+      <div class="max-w-6xl mx-auto">
         <div class="text-center mb-12">
           <span class="inline-block bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm font-medium mb-4">
             🔥 Горячие сборы
           </span>
           <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
-            Срочные сборы — помощь нужна сейчас
+            Помощь нужна прямо сейчас
           </h2>
           <p class="text-gray-600 mt-4 text-lg">
             Каждое пожертвование — это шаг ребёнка к выздоровлению. Присоединяйтесь!
           </p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
-          {sortedStories.map((story) => {
-            const isClosed = story.status.includes('закрыт');
-            return (
-              <article class={`bg-white rounded-3xl shadow-xl overflow-hidden border transition-all duration-300 group flex flex-col relative cursor-pointer hover:shadow-2xl hover:-translate-y-1 ${isClosed ? 'border-emerald-100' : 'border-gray-100'}`}>
-                <a href={`/news/${story.post_slug}/`} class="absolute inset-0 z-10" aria-label={`История: ${story.name}`}></a>
-                <div class="relative h-56 overflow-hidden">
-                  {story.image ? (
-                    <img
-                      src={story.image}
-                      alt={story.name}
-                      class={`w-full h-full object-cover ${POS_CLASS[story.image_pos] || ''} group-hover:scale-105 transition-transform duration-500`}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div class="w-full h-full bg-gradient-to-br from-primary-400 via-primary-500 to-amber-400 flex items-center justify-center">
-                      <span class="text-8xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">👧</span>
-                    </div>
-                  )}
-                  {isClosed ? (
-                    <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-emerald-500/95 backdrop-blur-sm text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                      ✅ Сбор закрыт — спасибо!
-                    </span>
-                  ) : (
-                    <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-red-500/95 backdrop-blur-sm text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                      <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                      Срочный сбор
-                    </span>
-                  )}
-                </div>
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {activeStories.map((story) => (
+            <article class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 group hover:shadow-2xl hover:-translate-y-1 flex flex-col relative">
+              <a href={`/news/${story.post_slug}/`} class="absolute inset-0 z-10" aria-label={`История: ${story.name}`}></a>
+              <div class="relative h-56 overflow-hidden">
+                {story.image ? (
+                  <img
+                    src={story.image}
+                    alt={story.name}
+                    class={`w-full h-full object-cover ${POS_CLASS[story.image_pos] || ''} group-hover:scale-105 transition-transform duration-500`}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-primary-400 via-primary-500 to-amber-400 flex items-center justify-center">
+                    <span class="text-8xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">👧</span>
+                  </div>
+                )}
+                <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-red-500/95 backdrop-blur-sm text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                  <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                  Срочный сбор
+                </span>
+              </div>
 
-                <div class="p-6 md:p-7 flex flex-col flex-1">
-                  <h3 class="text-2xl font-bold text-gray-900 group-hover:text-primary-700 transition-colors">{story.name}</h3>
-                  <p class="text-gray-500 text-sm mt-1">{story.age} • {story.condition}</p>
-                  <p class="text-gray-700 mt-4 leading-relaxed flex-1">{story.goal}</p>
-                  <p class="text-sm font-medium text-primary-600 mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    Читать историю →
-                  </p>
-                </div>
-              </article>
-            );
-          })}
+              <div class="p-6 md:p-7 flex flex-col flex-1">
+                <h3 class="text-2xl font-bold text-gray-900 group-hover:text-primary-700 transition-colors">{story.name}</h3>
+                <p class="text-gray-500 text-sm mt-1">{story.age} • {story.condition}</p>
+                <p class="text-gray-700 mt-4 leading-relaxed flex-1">{story.goal}</p>
+                <p class="text-sm font-medium text-primary-600 mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Читать историю →
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
 
         <p class="text-center text-gray-500 text-sm mt-10">
-          Хотите узнать больше о детях? <a href="/stories/" class="text-primary-600 hover:underline font-medium">Все истории →</a>
+          Все истории и завершённые сборы — <a href="/stories/" class="text-primary-600 hover:underline font-medium">на странице «Истории детей» →</a>
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Stats Section -->
+  <!-- Stats: цифры, которые говорят о работе фонда -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
         <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
-          <div class="w-14 h-14 bg-gradient-to-br from-pink-400 to-red-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-            🎬
+          <div class="w-14 h-14 bg-gradient-to-br from-rose-400 to-red-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+            ❤️
           </div>
-          <div class="text-3xl font-bold text-gray-800">{stats.clips}</div>
-          <div class="text-sm text-gray-500 mt-1">Клипов</div>
+          <div class="text-3xl font-bold text-gray-800">{activeStories.length}</div>
+          <div class="text-sm text-gray-500 mt-1">ребёнка ждут помощи сейчас</div>
         </div>
-        
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
+          <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+            ✅
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{closedCount}</div>
+          <div class="text-sm text-gray-500 mt-1">сбор завершён — спасибо!</div>
+        </div>
+
         <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
           <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-            📸
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{stats.photos}</div>
-          <div class="text-sm text-gray-500 mt-1">Фото</div>
-        </div>
-        
-        <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
-          <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-violet-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-            🎥
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{stats.videos}</div>
-          <div class="text-sm text-gray-500 mt-1">Видео</div>
-        </div>
-        
-        <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
-          <div class="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-            📝
+            📰
           </div>
           <div class="text-3xl font-bold text-gray-800">{stats.posts}</div>
-          <div class="text-sm text-gray-500 mt-1">Постов</div>
+          <div class="text-sm text-gray-500 mt-1">историй о нашей работе</div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
+          <div class="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+            👥
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{fund_info.followers}</div>
+          <div class="text-sm text-gray-500 mt-1">подписчиков в VK</div>
         </div>
       </div>
     </div>
@@ -166,8 +159,8 @@ const sortedStories = [...stories].sort(
 
   <!-- How to Help CTA -->
   <section class="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M0%2020L20%200L40%2020L20%2040z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
-    
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M0%2020L20%200L40%2020L20%2040z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
+
     <div class="container mx-auto px-4 relative z-10">
       <div class="text-center max-w-3xl mx-auto">
         <h2 class="text-3xl md:text-5xl font-bold mb-6">
@@ -177,8 +170,8 @@ const sortedStories = [...stories].sort(
           Выберите удобный способ для добровольного пожертвования.<br/>
           Вместе мы сделаем мир добрее!
         </p>
-        
-        <a 
+
+        <a
           href="/help/"
           class="inline-flex items-center gap-3 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-10 py-5 rounded-full font-bold text-lg transition-all hover:shadow-2xl hover:scale-105"
         >
@@ -200,7 +193,7 @@ const sortedStories = [...stories].sort(
         <p class="text-gray-600 mb-8">
           Все новости, истории и отчёты публикуются в нашей группе
         </p>
-        <a 
+        <a
           href="https://vk.ru/dostigenie_deti"
           target="_blank"
           rel="noopener noreferrer"
