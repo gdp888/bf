@@ -1,8 +1,16 @@
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const token = '92c6b73b92c6b73b92c6b73b059185f49b992c692c6b73bf85616bdc64586db266255e4';
+// ВНИМАНИЕ: токен ВК больше не хранится в коде (репо публичный!).
+// Передавай его через переменную окружения: VK_TOKEN=... node fetch-albums.cjs
+// Старый токен, попавший в историю git, нужно ОТЗЫВАТЬ в настройках группы ВК.
+const token = process.env.VK_TOKEN || '';
 const ownerId = '-223846998';
+
+if (!token) {
+  console.error('Ошибка: не задан VK_TOKEN (export VK_TOKEN=...)');
+  process.exit(1);
+}
 
 function get(url) {
   return new Promise((resolve, reject) => {

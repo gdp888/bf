@@ -230,21 +230,40 @@ def build_json(albums):
     if not any(alb.get('photos') for alb in albums) and ALBUMS_JSON.exists():
         log('EMPTY PARSE: сохраняю существующий albums.json')
         return
+    # накопленные богатые данные (description/date/text из VK API, слитые
+    # из выгрузки с токеном) переносим в новую версию файла, не теряем
+    rich = {}
+    if ALBUMS_JSON.exists():
+        try:
+            for old in json.loads(ALBUMS_JSON.read_text(encoding='utf-8')):
+                rich[old['id']] = old
+        except Exception:
+            pass
     out = []
     for alb in albums:
         # альбом 0 — «Фотографии со страницы сообщества» (аватар/обложка,
         # уже есть на сайте как fund-avatar) — в галерею не берём
         if alb['id'] == '0':
             continue
+        prev = rich.get(alb['id'], {})
+        prev_photos = {str(p.get('id')): p for p in prev.get('photos', [])}
         photos = []
         for p in alb['photos']:
             webp = IMG_DIR / f'a{alb["id"]}-{p["id"]}.webp'
             if webp.exists():
-                photos.append({'id': p['id'],
-                               'src': f'/images/albums/{webp.name}'})
+                item = {'id': p['id'],
+                        'src': f'/images/albums/{webp.name}'}
+                # переносим дату/подпись, если были
+                for k in ('date', 'text'):
+                    if prev_photos.get(p['id'], {}).get(k):
+                        item[k] = prev_photos[p['id']][k]
+                photos.append(item)
         if photos:
-            out.append({'id': alb['id'], 'title': alb['title'],
-                        'count': len(photos), 'photos': photos})
+            entry = {'id': alb['id'], 'title': alb['title'],
+                     'count': len(photos), 'photos': photos}
+            if prev.get('description'):
+                entry['description'] = prev['description']
+            out.append(entry)
     ALBUMS_JSON.write_text(json.dumps(out, ensure_ascii=False, indent=1),
                            encoding='utf-8')
     log(f'albums.json: {len(out)} albums, '

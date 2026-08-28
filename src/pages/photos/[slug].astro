@@ -37,12 +37,17 @@ export function getStaticPaths() {
 
 const { album } = Astro.props;
 const { title, photos } = album;
+const description = album.description || '';
 const ogImage = photos[0]?.src || '/images/fund-cover.jpg';
+// описание альбома от фонда — в мета-описание для SEO, если есть
+const metaDescription = description
+  ? `${title}: ${description.slice(0, 140)}`
+  : `${title}: ${album.count} ${plural(album.count)} из фотогалереи благотворительного фонда «Достижение-Дети». Наши подопечные и жизнь фонда.`;
 ---
 
 <Layout
   title={`${title} — Фотогалерея — БФ «Достижение-Дети»`}
-  description={`${title}: ${album.count} ${plural(album.count)} из фотогалереи благотворительного фонда «Достижение-Дети». Наши подопечные и жизнь фонда.`}
+  description={metaDescription}
   image={ogImage}
 >
   <section class="relative py-12 md:py-14 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
@@ -56,6 +61,11 @@ const ogImage = photos[0]?.src || '/images/fund-cover.jpg';
       <span class="inline-block mt-3 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium">
         📸 {album.count} {plural(album.count)}
       </span>
+      {description && (
+        <p class="text-white/85 mt-4 max-w-3xl text-sm md:text-base leading-relaxed">
+          {description}
+        </p>
+      )}
     </div>
   </section>
 
@@ -68,12 +78,12 @@ const ogImage = photos[0]?.src || '/images/fund-cover.jpg';
             class="mb-3 block w-full break-inside-avoid rounded-lg overflow-hidden group relative bg-gray-200 cursor-zoom-in"
             data-lightbox-trigger
             data-src={p.src}
-            data-alt={`${title} — фото ${i + 1}`}
+            data-alt={p.text || `${title} — фото ${i + 1}`}
             aria-label={`Открыть фото ${i + 1} на весь экран`}
           >
             <img
               src={p.src}
-              alt={`${title} — фото ${i + 1}`}
+              alt={p.text || `${title} — фото ${i + 1}`}
               class="w-full h-auto group-hover:brightness-110 transition"
               loading="lazy"
               decoding="async"
