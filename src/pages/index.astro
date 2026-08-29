@@ -12,7 +12,7 @@ const POS_CLASS = {
 // витрина сборов на главной: горячие сверху, закрытые ниже
 const activeStories = stories.filter((s) => !s.status.includes('закрыт'));
 const closedStories = stories.filter((s) => s.status.includes('закрыт'));
-const closedCount = closedStories.length;
+
 // пагинация завершённых сборов: первая порция на главной, хвост — на /page/2/ и далее
 const CLOSED_PER_PAGE = 8;
 const closedFirstPage = closedStories.slice(0, CLOSED_PER_PAGE);
@@ -213,13 +213,7 @@ const websiteSchema = {
           <div class="text-sm text-gray-500 mt-1">ребёнка ждут помощи сейчас</div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
-          <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-            ✅
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{closedCount}</div>
-          <div class="text-sm text-gray-500 mt-1">сбор завершён — спасибо!</div>
-        </div>
+        
 
         <div class="bg-white rounded-2xl p-6 shadow-lg shadow-primary-100 text-center hover:shadow-xl transition-shadow group">
           <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
