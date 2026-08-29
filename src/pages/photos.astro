@@ -25,7 +25,21 @@ function plural(n) {
 }
 
 const totalPhotos = albums.reduce((s, a) => s + a.count, 0);
-const prepared = albums.map((a) => ({ ...a, slug: slugify(a.title), title: pretty(a.title) }));
+
+// период альбома по датам фото из VK (для карточки и идентификации по дате)
+const MONTHS_AB = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
+const fmtMonth = (ts: number) => {
+  const d = new Date((ts + 3 * 3600) * 1000); // МСК, как в VK
+  return `${MONTHS_AB[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+};
+const albumPeriod = (photos: { date?: number }[]) => {
+  const dates = (photos || []).map((p) => p.date).filter(Boolean);
+  if (!dates.length) return '';
+  const mn = Math.min(...dates);
+  const mx = Math.max(...dates);
+  return fmtMonth(mn) === fmtMonth(mx) ? fmtMonth(mn) : `${fmtMonth(mn)} — ${fmtMonth(mx)}`;
+};
+const prepared = albums.map((a) => ({ ...a, slug: slugify(a.title), title: pretty(a.title), period: albumPeriod(a.photos) }));
 
 // og:image — обложка самого содержательного альбома
 const cover = prepared.slice().sort((a, b) => b.count - a.count)[0]?.photos?.[0]?.src || '/images/fund-cover.jpg';
@@ -92,7 +106,14 @@ const gallerySchema = {
               </span>
             </div>
             <div class="p-4 flex items-center justify-between gap-2">
-              <h2 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">{album.title}</h2>
+              <div class="min-w-0">
+                <h2 class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">{album.title}</h2>
+                {album.period && (
+                  <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                    <span aria-hidden="true">📅</span><span>{album.period}</span>
+                  </p>
+                )}
+              </div>
               <span class="text-gray-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all flex-shrink-0" aria-hidden="true">→</span>
             </div>
           </a>

@@ -39,6 +39,32 @@ export function getStaticPaths() {
 const { album } = Astro.props;
 const { title, photos } = album;
 const description = album.description || '';
+
+// ─── Даты фото: из VK API (дата загрузки в альбом), показываем в МСК ───
+const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+const MONTHS_AB = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
+const msk = (ts: number) => new Date((ts + 3 * 3600) * 1000);
+const fmtDate = (ts: number) => {
+  const d = msk(ts);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+};
+const fmtDateTime = (ts: number) => {
+  const d = msk(ts);
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const mm = String(d.getUTCMinutes()).padStart(2, '0');
+  return `${fmtDate(ts)}, ${hh}:${mm}`;
+};
+const fmtMonth = (ts: number) => {
+  const d = msk(ts);
+  return `${MONTHS_AB[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+};
+// период альбома по датам фото (для бейджа в hero)
+const albumDates = photos.map((p) => p.date).filter(Boolean);
+const period = albumDates.length
+  ? (fmtMonth(Math.min(...albumDates)) === fmtMonth(Math.max(...albumDates))
+      ? fmtMonth(Math.min(...albumDates))
+      : `${fmtMonth(Math.min(...albumDates))} — ${fmtMonth(Math.max(...albumDates))}`)
+  : '';
 const ogImage = photos[0]?.src || '/images/fund-cover.jpg';
 // описание альбома от фонда — в мета-описание для SEO, если есть
 const metaDescription = description
@@ -89,9 +115,16 @@ const breadcrumbSchema = {
         <a href="/photos/" class="hover:text-white">Фотогалерея</a>
       </nav>
       <h1 class="text-2xl md:text-3xl font-bold text-white">{title}</h1>
-      <span class="inline-block mt-3 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium">
-        📸 {album.count} {plural(album.count)}
-      </span>
+      <div class="flex flex-wrap items-center gap-2 mt-3">
+        <span class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium">
+          📸 {album.count} {plural(album.count)}
+        </span>
+        {period && (
+          <span class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium">
+            📅 {period}
+          </span>
+        )}
+      </div>
       {description && (
         <p class="text-white/85 mt-4 max-w-3xl text-sm md:text-base leading-relaxed">
           {description}
@@ -106,19 +139,26 @@ const breadcrumbSchema = {
         {photos.map((p, i) => (
           <button
             type="button"
-            class="mb-3 block w-full break-inside-avoid rounded-lg overflow-hidden group relative bg-gray-200 cursor-zoom-in"
+            class="mb-3 block w-full break-inside-avoid rounded-lg overflow-hidden group relative bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-zoom-in"
             data-lightbox-trigger
             data-src={p.src}
-            data-alt={p.text || `${title} — фото ${i + 1}`}
+            data-alt={p.text || `${title} — фото ${i + 1}${p.date ? `, ${fmtDate(p.date)}` : ''}`}
+            data-date={p.date ? fmtDateTime(p.date) : undefined}
             aria-label={`Открыть фото ${i + 1} на весь экран`}
           >
             <img
               src={p.src}
-              alt={p.text || `${title} — фото ${i + 1}`}
-              class="w-full h-auto group-hover:brightness-110 transition"
+              alt={p.text || `${title} — фото ${i + 1}${p.date ? `, ${fmtDate(p.date)}` : ''}`}
+              class="w-full h-auto group-hover:brightness-110 transition bg-gray-100"
               loading="lazy"
               decoding="async"
             />
+            {p.date && (
+              <span class="flex items-center gap-1.5 px-3 py-2 text-xs text-gray-500 bg-white">
+                <span aria-hidden="true">📅</span>
+                <span class="truncate">{fmtDate(p.date)}</span>
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -149,7 +189,10 @@ const breadcrumbSchema = {
     <button type="button" id="lb-prev" class="absolute left-2 md:left-6 text-white/80 hover:text-white text-4xl leading-none w-12 h-12 flex items-center justify-center" aria-label="Предыдущее фото">‹</button>
     <button type="button" id="lb-next" class="absolute right-2 md:right-6 text-white/80 hover:text-white text-4xl leading-none w-12 h-12 flex items-center justify-center" aria-label="Следующее фото">›</button>
     <img id="lb-img" src="" alt="" class="max-w-[92vw] max-h-[88vh] object-contain select-none" />
-    <span id="lb-count" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm bg-black/40 rounded-full px-3 py-1"></span>
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 max-w-[92vw]">
+      <span id="lb-date" class="hidden text-white/85 text-sm bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 whitespace-nowrap"></span>
+      <span id="lb-count" class="text-white/70 text-sm bg-black/40 rounded-full px-3 py-1"></span>
+    </div>
   </div>
 
   <script>
@@ -157,6 +200,7 @@ const breadcrumbSchema = {
     const lb = document.getElementById('lb')!;
     const lbImg = document.getElementById('lb-img') as HTMLImageElement;
     const lbCount = document.getElementById('lb-count')!;
+    const lbDate = document.getElementById('lb-date')!;
     let idx = 0;
 
     function show(i: number) {
@@ -165,6 +209,9 @@ const breadcrumbSchema = {
       lbImg.src = t.dataset.src || '';
       lbImg.alt = t.dataset.alt || '';
       lbCount.textContent = `${idx + 1} / ${triggers.length}`;
+      const dt = t.dataset.date || '';
+      lbDate.textContent = dt;
+      lbDate.classList.toggle('hidden', !dt);
     }
     function open(i: number) {
       show(i);
