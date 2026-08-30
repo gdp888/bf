@@ -1,0 +1,35 @@
+---
+const { page, firstUrl = '/news/', lastUrl = `/news/${page.lastPage}/` } = Astro.props;
+const prev = page.currentPage > 1 ? (page.currentPage === 2 ? firstUrl : `/news/${page.currentPage - 1}/`) : null;
+const next = page.currentPage < page.lastPage ? `/news/${page.currentPage + 1}/` : null;
+---
+
+<div class="mt-8 flex items-center justify-center gap-2">
+  {prev ? <a href={prev} class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">←</a> : null}
+
+  {page.currentPage > 3 && (
+    <>
+      <a href={firstUrl} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">1</a>
+      <span class="text-gray-400 text-sm">…</span>
+    </>
+  )}
+
+  {page.currentPage > 2 && (
+    <a href={page.currentPage === 3 ? firstUrl : `/news/${page.currentPage - 1}/`} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">{page.currentPage - 1}</a>
+  )}
+
+  <span class="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm font-medium">{page.currentPage}</span>
+
+  {page.currentPage < page.lastPage - 1 && (
+    <a href={page.currentPage === page.lastPage - 2 ? lastUrl : `/news/${page.currentPage + 1}/`} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">{page.currentPage + 1}</a>
+  )}
+
+  {page.currentPage < page.lastPage - 2 && (
+    <>
+      <span class="text-gray-400 text-sm">…</span>
+      <a href={lastUrl} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">{page.lastPage}</a>
+    </>
+  )}
+
+  {next ? <a href={next} class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">→</a> : null}
+</div>

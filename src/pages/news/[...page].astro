@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import PaginationBar from '../../components/PaginationBar.astro';
+import allPosts from '../../data/all_posts.json';
+
+export async function getStaticPaths({ paginate }) {
+  return paginate(allPosts, { pageSize: 20 });
+}
+
+const { page } = Astro.props;
+const title = page.currentPage === 1
+  ? `Новости фонда — БФ «Достижение-Дети»`
+  : `Новости фонда — страница ${page.currentPage} — БФ «Достижение-Дети»`;
+const desc = `Новости и публикации благотворительного фонда «Достижение-Дети». Страница ${page.currentPage} из ${page.lastPage}.`;
+---
+
+<Layout title={title} description={desc}>
+  <section class="relative py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 text-white/90 text-xs font-medium mb-4">
+        📰 {page.total} публикаций {page.currentPage > 1 && `— страница ${page.currentPage} из ${page.lastPage}`}
+      </span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white">Новости фонда</h1>
+    </div>
+  </section>
+
+  <section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {page.data.map((post) => (
+          <NewsCard post={post} href={`/news/${post.slug}/`} />
+        ))}
+      </div>
+
+      <PaginationBar page={page} />
+    </div>
+  </section>
+</Layout>
