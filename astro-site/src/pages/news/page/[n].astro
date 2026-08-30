@@ -35,13 +35,13 @@ const posts = allPosts.slice(start, start + perPage);
       </div>
 
       <div class="mt-8 flex items-center justify-center gap-2">
-        <a href="/news" class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">←</a>
+        {page > 1 && <a href={page === 2 ? '/news' : `/news/page/${page - 1}`} class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">←</a>}
         <a href="/news" class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">1</a>
         <span class="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm font-medium">{page}</span>
         {page + 1 <= totalPages && <a href={`/news/page/${page + 1}`} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">{page + 1}</a>}
         {page + 2 <= totalPages && <span class="text-gray-400 text-sm">…</span>}
         {page < totalPages && <a href={`/news/page/${totalPages}`} class="px-4 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">{totalPages}</a>}
-        {page + 1 <= totalPages && <a href={`/news/page/${page + 1}`} class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">→</a>}
+        {page < totalPages && <a href={page + 1 === 2 ? '/news' : `/news/page/${page + 1}`} class="px-3 py-2 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-100 border">→</a>}
       </div>
     </div>
   </section>
