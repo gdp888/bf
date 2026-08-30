@@ -1,0 +1,40 @@
+---
+const { post, href } = Astro.props;
+const img = post.images?.[0] || post.videos?.[0]?.image || null;
+const likes = post.likes?.count ?? (typeof post.likes === 'number' ? post.likes : 0);
+const comments = post.comments?.count ?? (typeof post.comments === 'number' ? post.comments : 0);
+const hasVideo = post.videos?.length > 0;
+const hasImages = post.images?.length > 0;
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function truncate(t, n) {
+  return t && t.length > n ? t.substring(0, n) + '…' : (t || '');
+}
+---
+
+<a href={href} class="block bg-white rounded-xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 overflow-hidden border border-gray-100 group">
+  {img ? (
+    <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+      <img src={img} alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+      {hasVideo && (
+        <span class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">🎬 Видео</span>
+      )}
+    </div>
+  ) : null}
+  <div class="p-4">
+    <div class="flex items-center gap-2 text-xs text-gray-400 mb-1.5">
+      <span>{formatDate(post.date)}</span>
+      {hasVideo && !img && <span class="text-red-500">🎬</span>}
+      {hasImages && <span>📷 {post.images.length}</span>}
+    </div>
+    <p class="text-sm text-gray-800 leading-relaxed line-clamp-3">
+      {truncate(post.text, 250) || <span class="text-gray-400 italic">Нет текста</span>}
+    </p>
+    <div class="flex items-center gap-3 mt-2 pt-2 border-t border-gray-50 text-xs text-gray-400">
+      <span>❤️ {likes}</span>
+      <span>💬 {comments}</span>
+    </div>
+  </div>
+</a>

@@ -1,21 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import NewsCard from '../components/NewsCard.astro';
 import allPosts from '../data/all_posts.json';
 
 const perPage = 20;
 const totalPages = Math.ceil(allPosts.length / perPage);
 const page = 1;
 const posts = allPosts.slice(0, perPage);
-
-function formatDate(d) {
-  return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-function truncate(t, n) {
-  return t && t.length > n ? t.substring(0, n) + '…' : (t || '');
-}
-function likes(p) {
-  return p.likes?.count ?? (typeof p.likes === 'number' ? p.likes : 0);
-}
 ---
 
 <Layout title={`Новости фонда — БФ «Достижение-Дети»`}>
@@ -27,34 +18,10 @@ function likes(p) {
   </section>
 
   <section class="py-8 bg-gray-50">
-    <div class="container mx-auto px-4 max-w-3xl">
-      <div class="space-y-3">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {posts.map((post) => (
-          <a href={`/news/${post.slug}/`} class="block bg-white rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden group">
-            <div class="flex gap-3 p-3">
-              {(() => {
-                const img = post.images?.[0] || post.videos?.[0]?.image;
-                return img ? (
-                  <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                    <img src={img} alt="" class="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                ) : null;
-              })()}
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 text-xs text-gray-400 mb-0.5">
-                  <span>{formatDate(post.date)}</span>
-                  {post.videos?.length > 0 && <span class="text-red-500">🎬</span>}
-                </div>
-                <p class="text-sm text-gray-800 leading-snug line-clamp-2">
-                  {truncate(post.text, 200) || <span class="text-gray-400 italic">Нет текста</span>}
-                </p>
-                <div class="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                  <span>❤️ {likes(post)}</span>
-                  <span>💬 {post.comments?.count || 0}</span>
-                </div>
-              </div>
-            </div>
-          </a>
+          <NewsCard post={post} href={`/news/${post.slug}/`} />
         ))}
       </div>
 
