@@ -33,49 +33,23 @@ const websiteSchema = {
 
 <Layout title="БФ «Достижение-Дети» — Помощь детям с особенностями здоровья">
   <JsonLd slot="head" data={[websiteSchema]} />
-  <!-- Hero: компактный, конкретика вместо общих слов -->
-  <section class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('/images/fund-cover.jpg')] bg-cover bg-center"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/92 via-blue-950/85 to-blue-900/75"></div>
-
-    <div class="container mx-auto px-4 py-14 md:py-20 relative z-10">
-      <div class="max-w-3xl mx-auto text-center">
-        <span class="inline-block bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-white/90 text-sm font-medium mb-5">
-          💙 {fund_info.name}
-        </span>
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-          Помощь детям с ДЦП<br class="hidden md:block" /> и особенностями здоровья
-        </h1>
-
-        <p class="text-base md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-          Мы оплачиваем курсы реабилитации с 2018 года. И дети делают первые шаги
-          и произносят первые слова. Помогите ещё одному ребёнку.
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="/help/"
-            class="group bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-8 py-4 rounded-full font-bold text-lg transition-all hover:shadow-2xl hover:scale-105 flex items-center gap-2"
-          >
-            <span>💝</span>
-            <span>Помочь сейчас</span>
-            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </a>
-          <a
-            href="#sbory"
-            class="text-white/90 hover:text-white border-b-2 border-white/30 hover:border-white/70 pb-0.5 font-medium transition-colors"
-          >
-            К текущим сборам ↓
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Wave divider -->
-    <div class="absolute bottom-0 left-0 right-0">
-      <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
-        <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#ffffff"/>
-      </svg>
+  <!-- Hero: компактный заголовок — дети должны быть видны без скролла -->
+  <section class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900">
+    <div class="container mx-auto px-4 py-10 md:py-14 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-3">
+        Дети ждут вашей помощи
+      </h1>
+      <p class="text-base md:text-lg text-white/60 mb-6 max-w-lg mx-auto">
+        БФ «Достижение-Дети» — помогаем детям с ДЦП и особенностями здоровья с 2018 года
+      </p>
+      <a
+        href="/help/"
+        class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-6 py-3 rounded-full font-bold text-base transition-all hover:shadow-2xl hover:scale-105"
+      >
+        <span>💝</span>
+        <span>Помочь сейчас</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
     </div>
   </section>
 
