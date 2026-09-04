@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://bf-alpha-liart.vercel.app',
+  site: 'https://dobrodeti.ru',
   integrations: [tailwind(), sitemap()],
   build: {
     format: 'directory',

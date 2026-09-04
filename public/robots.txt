@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bf-alpha-liart.vercel.app/sitemap-index.xml
+Sitemap: https://dobrodeti.ru/sitemap-index.xml
