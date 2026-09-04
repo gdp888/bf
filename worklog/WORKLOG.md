@@ -224,3 +224,22 @@ Stage Summary:
 - Даты из VK теперь видны в трёх местах: под каждой фоткой (дата), в лайтбоксе (дата+время), период альбома (hero-бейдж + карточки)
 - Даты выводятся в МСК; формат «25 декабря 2023» / «25 декабря 2023, 22:20» / «дек. 2023 — авг. 2025»
 - Условный рендер: если у фото нет даты в источнике — подпись не выводится (требование юзера)
+
+---
+Task ID: 13
+Agent: Super Z (main)
+Task: Подключение собственного домена dobrodeti.ru (юзер купил и приклеил к Vercel сегодня)
+
+Work Log:
+- Юзер купил dobrodeti.ru и добавил в Vercel; DNS проверен: A 64.29.17.1/64.29.17.65 (Vercel), www → 301 на апекс, http → 308 на https, Let's Encrypt сертификат выпущен автоматически (до 03.12.2026)
+- Окружение сессии было пересоздано: репо переклонировано (shallow, 2995ee8) — git fetch origin → актуальный main 8436426 (после моих задач 11-12 работала другая сессия: пагинация новостей, закрытые сборы, Telegram в футере, компактная главная — 51 коммит); локальные mode-bit правки сброшены
+- Аудит хардкодов домена: только 2 файла (astro.config.mjs site + public/robots.txt Sitemap); в src/data, scripts, CI — чисто
+- Переключение одним коммитом: site: 'https://dobrodeti.ru' + Sitemap: https://dobrodeti.ru/sitemap-index.xml
+- Build 645 страниц (пагинация добавила URL); верификация dist: canonical/og:url на всех типах страниц → dobrodeti.ru, og:image → абсолютные на новом домене, Schema.org @id (#ngo, #website), BreadcrumbList на постах, NewsArticle — всё на новом домене; grep старого домена по dist = 0 вхождений; sitemap 645/645 URL на новом домене
+- Коммит 6767e3e, пуш → деплой Vercel ~75с → прод проверен: robots.txt, sitemap, canonical (главная, /news/, /photos/, /videos/, /help/, посты), Schema.org @id, og:image — всё на dobrodeti.ru; 404 работает
+- Старый bf-alpha-liart.vercel.app продолжает отдавать 200, НО canonical его страниц теперь указывает на dobrodeti.ru (дублей в индексе не будет); полный 301 с vercel.app можно включить в Vercel dashboard: Settings → Domains → vercel.app домен → Redirect to dobrodeti.ru
+
+Stage Summary:
+- Сайт официально на собственном домене фонда: https://dobrodeti.ru (https, www→301, canonical/sitemap/Schema.org везде)
+- Canonical домены vercel.app-версии указывают на dobrodeti.ru — SEO-дублей нет
+- Бэклог: Vercel Yandex Webmaster / Google Search Console добавить dobrodeti.ru; QR ЮMoney и реальные цифры сборов — всё ещё ждём от фонда
