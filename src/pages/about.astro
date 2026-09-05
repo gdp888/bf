@@ -1,0 +1,383 @@
+---
+import Layout from '../layouts/Layout.astro';
+import JsonLd from '../components/JsonLd.astro';
+import fundData from '../data/fund.json';
+import albums from '../data/albums.json';
+
+const { fund_info } = fundData;
+const { contacts } = fund_info;
+
+// фото для «живых» секций: праздники и будни фонда из галереи
+const holidayAlbum = albums.find((a) => a.title === 'Праздники');
+const lifePhotos = (holidayAlbum?.photos || []).slice(0, 3);
+
+const years = new Date().getFullYear() - 2018;
+const kidsTotal = fundData.stories.length;
+const closedFunds = fundData.stories.filter((s) => s.status === 'Сбор закрыт').length;
+
+const VK_URL = 'https://vk.ru/dostigenie_deti';
+const TG_URL = 'https://t.me/dostigenie_deti';
+
+// ─── Schema.org: AboutPage + хлебные крошки ───
+const BASE = Astro.site!.href;
+const aboutUrl = new URL('about/', Astro.site).href;
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': `${aboutUrl}#webpage`,
+  url: aboutUrl,
+  name: 'О фонде — БФ «Достижение-Дети»',
+  inLanguage: 'ru',
+  isPartOf: { '@id': `${BASE}#website` },
+  about: { '@id': `${BASE}#ngo` },
+  mainEntity: { '@id': `${BASE}#ngo` },
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: BASE },
+    { '@type': 'ListItem', position: 2, name: 'О фонде', item: aboutUrl },
+  ],
+};
+---
+
+<Layout
+  title="О фонде — БФ «Достижение-Дети»"
+  description={`Кто мы: фонд «Достижение-Дети» с 2018 года помогает детям с ДЦП и особенностями здоровья. В фонде нет штата и зарплат — все работают бесплатно, пожертвования идут на сборы для детей.`}
+>
+  <JsonLd slot="head" data={[aboutSchema, breadcrumbSchema]} />
+
+  <!-- ═══ Hero ═══ -->
+  <section class="relative py-20 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <span class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-white/90 text-sm font-medium mb-6">
+        💙 О фонде
+      </span>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-5">
+        Всё просто: дети, добро и вы
+      </h1>
+      <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+        Мы — благотворительный фонд «Достижение-Дети». С 2018 года помогаем детям
+        с ДЦП и особенностями здоровья. У нас нет штата и зарплат — только
+        волонтёры, спонсоры и наши дорогие детишки. Ничего лишнего.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/help/"
+          class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-7 py-3.5 rounded-full font-bold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:scale-105 transition-all"
+        >
+          <span>💝</span><span>Помочь детям</span>
+        </a>
+        <a
+          href="#kak-ustroen"
+          class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-7 py-3.5 rounded-full font-semibold transition-all"
+        >
+          Как устроен фонд <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Кто мы ═══ -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <div>
+          <span class="text-primary-600 font-semibold text-sm uppercase tracking-wide">Кто мы</span>
+          <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-6">
+            Фонд «Достижение-Дети» — {years} года добрых дел
+          </h2>
+          <div class="space-y-4 text-gray-600 leading-relaxed">
+            <p>
+              Благотворительный фонд «Достижение-Дети» работает с марта 2018 года
+              в Новокуйбышевске. Все эти годы мы помогаем детям с ДЦП, синдромом
+              Рубинштейна-Тэйби, СМА и другими особенностями здоровья — детям,
+              которым реабилитация даёт шанс ходить, говорить и жить полноценной
+              жизнью.
+            </p>
+            <p>
+              Мы оплачиваем курсы реабилитации, проводим праздники, организуем
+              летний отдых и поддерживаем семьи наших подопечных. За каждым
+              сбором стоит конкретный ребёнок с конкретной задачей: сделать
+              шаг, произнести первое слово, укрепить спинку.
+            </p>
+            <p>
+              Наша миссия проста: <strong class="text-gray-800">вместе мы сделаем мир добрее</strong>.
+              И это не просто слова — это принцип, по которому живёт фонд и все,
+              кто его поддерживает.
+            </p>
+          </div>
+          <div class="mt-8 grid grid-cols-2 gap-4">
+            <div class="bg-primary-50 rounded-xl p-4">
+              <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Работаем с</div>
+              <div class="font-bold text-xl text-gray-900 mt-1">марта 2018 года</div>
+            </div>
+            <div class="bg-primary-50 rounded-xl p-4">
+              <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Президент фонда</div>
+              <div class="font-bold text-xl text-gray-900 mt-1">{contacts.president}</div>
+            </div>
+            <div class="bg-primary-50 rounded-xl p-4">
+              <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Город</div>
+              <div class="font-bold text-xl text-gray-900 mt-1">Новокуйбышевск</div>
+            </div>
+            <div class="bg-primary-50 rounded-xl p-4">
+              <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">ИНН</div>
+              <div class="font-bold text-xl text-gray-900 mt-1">{fundData.bank_details.inn}</div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <img
+            src="/images/fund-cover.jpg"
+            alt="Команда и подопечные фонда «Достижение-Дети»"
+            class="rounded-2xl shadow-xl w-full h-auto object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          {lifePhotos[0] && (
+            <img
+              src={lifePhotos[0].src}
+              alt="Праздник для подопечных фонда"
+              class="hidden md:block absolute -bottom-8 -left-8 w-48 h-48 object-cover rounded-2xl shadow-2xl border-4 border-white"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Чем мы занимаемся ═══ -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12 max-w-2xl mx-auto">
+        <span class="text-primary-600 font-semibold text-sm uppercase tracking-wide">Чем мы занимаемся</span>
+        <h2 class="text-3xl font-bold text-gray-900 mt-2">
+          Четыре дела фонда
+        </h2>
+        <p class="text-gray-600 mt-4">
+          У фонда нет распределённых направлений с отдельными бюджетами — есть
+          простые и понятные дела, которые мы делаем руками волонтёров и на
+          ваши пожертвования.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all group border border-gray-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+            💪
+          </div>
+          <h3 class="font-bold text-lg text-gray-900 mb-2">Реабилитация</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Оплачиваем курсы реабилитации в проверенных центрах — ЛФК, массаж,
+            логопедия, занятия с дефектологом. Это главная статья наших сборов.
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all group border border-gray-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+            🎉
+          </div>
+          <h3 class="font-bold text-lg text-gray-900 mb-2">Праздники</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Проводим праздники для подопечных: Новый год, дни рождения,
+            мастер-классы. Для особых деток радость — тоже терапия.
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all group border border-gray-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+            ☀️
+          </div>
+          <h3 class="font-bold text-lg text-gray-900 mb-2">Летний отдых</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Организуем летний отдых для наших семей — поездки и мероприятия,
+            где дети набираются сил, а родители — терпения и поддержки.
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all group border border-gray-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+            🤗
+          </div>
+          <h3 class="font-bold text-lg text-gray-900 mb-2">Поддержка семей</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Помогаем семьям подопечных не оставаться один на один с диагнозом:
+            советом, делом и просто человеческим участием.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Как устроен фонд (ключевой блок) ═══ -->
+  <section id="kak-ustroen" class="py-16 bg-gradient-to-r from-slate-900 via-blue-950 to-blue-900 scroll-mt-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-block bg-amber-400/20 text-amber-300 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
+          ⭐ Самое важное, что стоит о нас знать
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+          Как устроен фонд: всё просто, ничего лишнего
+        </h2>
+        <p class="text-lg text-white/80 leading-relaxed max-w-3xl mx-auto">
+          В фонде <strong class="text-white">нет штата и нет зарплатного проекта</strong>.
+          У нас нет наёмных сотрудников и штатных специалистов — все работают
+          бесплатно. Ни один рубль пожертвований не уходит на зарплаты, офисы
+          и «обслуживание» фонда. Всё, что вы жертвуете, работает на одну цель —
+          нужды наших детишек.
+        </p>
+      </div>
+
+      <!-- Три опоры фонда -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mt-12">
+        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 text-center hover:bg-white/15 transition-colors">
+          <div class="text-5xl mb-4">🤲</div>
+          <h3 class="font-bold text-xl text-white mb-3">Волонтёры</h3>
+          <p class="text-white/70 text-sm leading-relaxed">
+            Те, кто делает. Организуют сборы, праздники и отдых, ведут группу,
+            отвечают вам в личке. Бесплатно и от сердца.
+          </p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 text-center hover:bg-white/15 transition-colors">
+          <div class="text-5xl mb-4">💛</div>
+          <h3 class="font-bold text-xl text-white mb-3">Спонсоры и попечители</h3>
+          <p class="text-white/70 text-sm leading-relaxed">
+            Вы — наши дорогие жертвователи. Каждое пожертвование, большое и
+            маленькое, становится реальным шагом, уроком или праздником для ребёнка.
+          </p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 text-center hover:bg-white/15 transition-colors">
+          <div class="text-5xl mb-4">👶</div>
+          <h3 class="font-bold text-xl text-white mb-3">Наши детишки</h3>
+          <p class="text-white/70 text-sm leading-relaxed">
+            Ради кого всё это. Дети с ДЦП и особенностями здоровья, на нужды
+            которых мы собираем. Каждый сбор — про конкретного ребёнка.
+          </p>
+        </div>
+      </div>
+
+      <!-- Что это значит для вашего пожертвования -->
+      <div class="max-w-4xl mx-auto mt-10 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl flex-shrink-0" aria-hidden="true">✓</span>
+            <p class="text-white/85 text-sm leading-relaxed">Все работают бесплатно — фонд не платит зарплаты</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl flex-shrink-0" aria-hidden="true">✓</span>
+            <p class="text-white/85 text-sm leading-relaxed">Нет расходов на офис и содержание аппарата</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl flex-shrink-0" aria-hidden="true">✓</span>
+            <p class="text-white/85 text-sm leading-relaxed">Пожертвования идут на сборы для конкретных детей</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl flex-shrink-0" aria-hidden="true">✓</span>
+            <p class="text-white/85 text-sm leading-relaxed">Отчёты по каждому сбору — в нашей ленте и галерее</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Цифры ═══ -->
+  <section class="py-14 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <div class="text-center p-6 bg-gray-50 rounded-2xl">
+          <div class="text-3xl md:text-4xl font-bold text-primary-600">{years}</div>
+          <div class="text-sm text-gray-500 mt-2">лет помогаем детям</div>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-2xl">
+          <div class="text-3xl md:text-4xl font-bold text-primary-600">{kidsTotal}</div>
+          <div class="text-sm text-gray-500 mt-2">историй детей на сайте</div>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-2xl">
+          <div class="text-3xl md:text-4xl font-bold text-primary-600">{closedFunds}</div>
+          <div class="text-sm text-gray-500 mt-2">сборов закрыто благодаря вам</div>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-2xl">
+          <div class="text-3xl md:text-4xl font-bold text-primary-600">100%</div>
+          <div class="text-sm text-gray-500 mt-2">пожертвований — детям</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Присоединяйтесь ═══ -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12 max-w-2xl mx-auto">
+        <span class="text-primary-600 font-semibold text-sm uppercase tracking-wide">Присоединяйтесь</span>
+        <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-4">
+          Хотите помочь? Выберите свой путь
+        </h2>
+        <p class="text-gray-600">
+          Фонд живёт благодаря людям: кто-то жертвует, кто-то работает руками.
+          Любое участие — ценное. А если хотите помочь финансово или стать
+          волонтёром — просто напишите нам в личку, обсудим, как вам удобнее.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 p-8 text-center flex flex-col">
+          <div class="text-5xl mb-4">💝</div>
+          <h3 class="font-bold text-xl text-gray-900 mb-3">Помочь финансово</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6 flex-1">
+            Разовое или регулярное пожертвование — банковский перевод, VK Donut
+            или QR-код. Все способы на одной странице.
+          </p>
+          <a
+            href="/help/"
+            class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-gray-900 px-6 py-3 rounded-full font-bold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:scale-105 transition-all"
+          >
+            <span>Способы помочь</span>
+          </a>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 p-8 text-center flex flex-col">
+          <div class="text-5xl mb-4">🤝</div>
+          <h3 class="font-bold text-xl text-gray-900 mb-3">Стать волонтёром или попечителем</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6 flex-1">
+            Помогать можно не только деньгами: руки, время, профессиональные
+            навыки, помощь в организации. Напишите нам — расскажете, что умеете,
+            а мы найдём, где это нужнее всего.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={VK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 bg-[#0077FF] hover:bg-[#0066DD] text-white px-6 py-3 rounded-full font-semibold transition-colors w-full sm:w-auto"
+            >
+              <span>✉️</span><span>Написать в VK</span>
+            </a>
+            <a
+              href={TG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1E8FC4] text-white px-6 py-3 rounded-full font-semibold transition-colors w-full sm:w-auto"
+            >
+              <span>✈️</span><span>Написать в Telegram</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Контакты -->
+      <div class="max-w-4xl mx-auto mt-10 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Телефон</div>
+            <a href="tel:+79503138150" class="text-gray-800 font-semibold hover:text-primary-600 transition-colors">{contacts.phone}</a>
+          </div>
+          <div>
+            <div class="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Адрес</div>
+            <div class="text-gray-800 font-semibold">{contacts.address}</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Координатор волонтёров</div>
+            <div class="text-gray-800 font-semibold">{contacts.volunteer}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
