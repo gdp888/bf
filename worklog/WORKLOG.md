@@ -243,3 +243,18 @@ Stage Summary:
 - Сайт официально на собственном домене фонда: https://dobrodeti.ru (https, www→301, canonical/sitemap/Schema.org везде)
 - Canonical домены vercel.app-версии указывают на dobrodeti.ru — SEO-дублей нет
 - Бэклог: Vercel Yandex Webmaster / Google Search Console добавить dobrodeti.ru; QR ЮMoney и реальные цифры сборов — всё ещё ждём от фонда
+
+---
+Task ID: 14
+Agent: Super Z (main)
+Task: Файл верификации Яндекс.Вебмастера для dobrodeti.ru в корень сайта
+
+Work Log:
+- Юзер загрузил yandex_4cfc8bc034318434.html; в файле обнаружен инжект скрипта Kaspersky (втулился при скачивании на компе юзера) — вычищен, оставлен чистый Yandex-шаблон с Verification-строкой
+- Файл положен в public/ (Astro → корень dist/); окружение сессии снова пересоздано: git fetch + checkout origin/main 240f060, npm install
+- Build 645 стр., файл в dist/yandex_4cfc8bc034318434.html; коммит 7b8aef2, пуш
+- Продакшн проверен сразу после деплоя (~75с): HTTP 200, тело содержит Verification: 4cfc8bc034318434
+
+Stage Summary:
+- https://dobrodeti.ru/yandex_4cfc8bc034318434.html отвечает 200 с правильной строкой — юзеру осталось нажать «Проверить» в Яндекс.Вебмастере
+- Следующие шаги в Вебмастере после подтверждения прав: добавить sitemap-index.xml, отправить главную на индексацию
